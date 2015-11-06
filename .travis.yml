@@ -50,10 +50,12 @@ before_install:
   - export PATH=${CROSS_BIN_DIR}:$PATH
   - ls -al /bin/sh
   - which sh
+  - sh --version
   - ls -al /bin/bash
   - which bash
   - ln -s /bin/bash ${BIN_DIR}/sh
   - which sh
+  - sh --version
 
 #install:
   #- tools/ninja-install.py --src ${SRC_DIR}/ninja --prefix ${INSTALL_DIR}
@@ -65,7 +67,7 @@ script:
   - python --version
   - output=$(python --version) && [[ ${output} == *"3.5"* ]]
   - python2 --version
-  - output=$(python2 --version) && [[ ${output} == *"2"* ]]
+  - output=$(python2 --version) && [[ ${output} == *"2.7"* ]]
   - python3 --version
   - output=$(python3 --version) && [[ ${output} == *"3.5"* ]]
   - virtualenv --version
