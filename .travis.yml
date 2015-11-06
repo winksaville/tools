@@ -53,7 +53,7 @@ before_install:
   - sh --version
   - ls -al /bin/bash
   - which bash
-  - ! test -L ${BIN_DIR}/sh && ln -s /bin/bash ${BIN_DIR}/sh
+  - [ ! -L ${BIN_DIR}/sh ] && ln -s /bin/bash ${BIN_DIR}/sh fi
   - which sh
   - sh --version
 
