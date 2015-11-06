@@ -48,6 +48,12 @@ before_install:
   - mkdir -p ${CROSS_BIN_DIR}
   - export PATH=${BIN_DIR}:$PATH
   - export PATH=${CROSS_BIN_DIR}:$PATH
+  - ls -al /bin/sh
+  - which sh
+  - ls -al /bin/bash
+  - which bash
+  - ln -s /bin/bash ${BIN_DIR}/sh
+  - which sh
 
 #install:
   #- tools/ninja-install.py --src ${SRC_DIR}/ninja --prefix ${INSTALL_DIR}
@@ -56,12 +62,6 @@ before_install:
   #- tools/gcc-install.py --src ${SRC_DIR}/gcc --prefix ${INSTALL_DIR}/cross
 
 script:
-  - ls -al /bin/sh
-  - which sh
-  - ls -al /bin/bash
-  - which bash
-  - chsh -s /bin/bash
-  - which sh
   - python --version
   - output=$(python --version) && [[ ${output} == *"3.5"* ]]
   - python2 --version
