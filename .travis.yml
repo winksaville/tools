@@ -60,12 +60,14 @@ script:
   - which sh
   - ls -al /bin/bash
   - which bash
+  - chsh -s /bin/bash
+  - which sh
   - python --version
   - output=$(python --version) && [[ ${output} == *"3.5"* ]]
   - python2 --version
-  - output=$(python --version) && [[ ${output} == *"2"* ]]
+  - output=$(python2 --version) && [[ ${output} == *"2"* ]]
   - python3 --version
-  - output=$(python --version) && [[ ${output} == *"3.5"* ]]
+  - output=$(python3 --version) && [[ ${output} == *"3.5"* ]]
   - virtualenv --version
     #- arm-eabi-ld --version
     #- output=$(ninja --version) && [[ ${output} == *"1.6"* ]]
