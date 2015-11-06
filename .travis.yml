@@ -65,11 +65,11 @@ before_install:
 
 script:
   - python --version
-  - output=$(python --version 2>&1) && [[ ${output} == *"3.5"* ]] ; echo $? ; echo ${output}
+  - output=$(python --version 2>&1) && [[ ${output} == *"3.5"* ]]
   - python2 --version
-  - output=$(python2 --version 2>&1) && [[ ${output} == *"2.7"* ]] ; echo $? ; echo ${output}
+  - output=$(python2 --version 2>&1) && [[ ${output} == *"2.7"* ]]
   - python3 --version
-  - output=$(python3 --version 2>&1) && [[ ${output} == *"3.5"* ]] ; echo $? ; echo ${output}
+  - output=$(python3 --version 2>&1) && [[ ${output} == *"3.5"* ]]
   - virtualenv --version
     #- arm-eabi-ld --version
     #- output=$(ninja --version) && [[ ${output} == *"1.6"* ]]
