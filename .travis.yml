@@ -67,7 +67,7 @@ script:
   - python --version
   - output=$(python --version 2>&1) && [[ ${output} == *"3.5"* ]] ; echo $? ; echo ${output}
   - python2 --version
-  - output=$(python2 --version 2>&1) && [[ ${output} == *"2.7" ]] ; echo $? ; echo ${output}
+  - output=$(python2 --version 2>&1) && [[ ${output} == *"2.7"* ]] ; echo $? ; echo ${output}
   - python3 --version
   - output=$(python3 --version 2>&1) && [[ ${output} == *"3.5"* ]] ; echo $? ; echo ${output}
   - virtualenv --version
