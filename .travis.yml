@@ -12,7 +12,7 @@
 # see the license for the specific language governing permissions and
 # limitations under the license.
 
-language: bash
+language: python
 sudo: false
 
 python:
@@ -56,10 +56,17 @@ before_install:
   #- tools/gcc-install.py --src ${SRC_DIR}/gcc --prefix ${INSTALL_DIR}/cross
 
 script:
+  - ls -al /bin/sh
+  - which sh
+  - ls -al /bin/bash
+  - which bash
+  - python --version
   - output=$(python --version) && [[ ${output} == *"3.5"* ]]
-    #- python2 --version
-    #- python3 --version
-    #- virtualenv --version
+  - python2 --version
+  - output=$(python --version) && [[ ${output} == *"2"* ]]
+  - python3 --version
+  - output=$(python --version) && [[ ${output} == *"3.5"* ]]
+  - virtualenv --version
     #- arm-eabi-ld --version
     #- output=$(ninja --version) && [[ ${output} == *"1.6"* ]]
     #- qemu-system-arm --version
