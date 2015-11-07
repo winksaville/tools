@@ -66,9 +66,7 @@ before_install:
   - virtualenv --version
 
 install:
-  - ./all-install.py \
-    --srcPrefixDir ${SRC_PREFIX_DIR} \
-    --installPrefixDir ${INSTALL_PREFIX_DIR}
+  - ./all-install.py --srcPrefixDir ${SRC_PREFIX_DIR} --installPrefixDir ${INSTALL_PREFIX_DIR}
 
 script:
   # Test that everything was installed
