@@ -25,34 +25,35 @@ import multiprocessing
 
 VER='2.4.0.1'
 APP='qemu-system-arm'
-PREFIX='opt'
+PREFIX='~/opt'
 
 if __name__ == '__main__':
 
     args = installargs.InstallArgs(APP, VER, PREFIX)
 
-    dst_dir = os.path.abspath(args.o.prefix)
+    dst_dir = os.path.abspath(args.o.installPrefixDir)
     os.makedirs(dst_dir, exist_ok=True)
     dst = os.path.abspath(dst_dir + '/bin/{app}'.format(app=APP))
 
     try:
-        output = subprocess.check_output([dst, '--version'])
+        output = subprocess.check_output([dst, '--version'],
+                stderr=subprocess.STDOUT)
         if output is None:
             output = b''
     except BaseException as err:
         output = b''
 
     if bytes(args.o.ver, 'utf-8') in output:
-        print('{app} {ver} is already installed'.format(app=args.o.src, ver=VER))
+        print('{app} {ver} is already installed'.format(app=APP, ver=VER))
         exit(0)
     else:
-        print('compiling {app} {ver}'.format(app=args.o.src, ver=VER))
-        os.makedirs(args.o.src, exist_ok=True)
+        print('compiling {app} {ver}'.format(app=APP, ver=VER))
+        os.makedirs(args.o.srcPrefixDir, exist_ok=True)
 
         try:
             url = 'git://git.qemu.org/qemu.git'
-            utils.git('clone', [url, args.o.src])
-            os.chdir(args.o.src)
+            utils.git('clone', [url, args.o.srcPrefixDir])
+            os.chdir(args.o.srcPrefixDir)
             utils.git('checkout', ['v{ver}'.format(ver=VER)])
             utils.git('submodule', ['update', '--init', 'dtc'])
             os.mkdir('build')
@@ -64,7 +65,7 @@ if __name__ == '__main__':
         print('configure')
         utils.bashPython2(
                 '../configure --prefix={} --target-list=arm-softmmu,arm-linux-user'
-                .format(args.o.prefix))
+                .format(args.o.installPrefixDir))
         utils.bashPython2('make -j {}'.format(multiprocessing.cpu_count()))
         utils.bashPython2('make install')
 

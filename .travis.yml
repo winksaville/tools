@@ -20,18 +20,18 @@ python:
 
 env:
   global:
-    - INSTALL_DIR=$HOME/opt
-    - BIN_DIR=${INSTALL_DIR}/bin
-    - CROSS_BIN_DIR=${INSTALL_DIR}/cross/bin
+    - INSTALL_PREFIX_DIR=$HOME/opt
+    - BIN_DIR=${INSTALL_PREFIX_DIR}/bin
+    - CROSS_BIN_DIR=${INSTALL_PREFIX_DIR}/cross/bin
     - CACHE_DIR=$HOME/cached
-    - SRC_DIR=$HOME/tmp
+    - SRC_PREFIX_DIR=$HOME/tmp
   matrix:
     - Platform=Posix
 
 # Don't cache our testing of install's
 #cache:
 #  directories:
-#    - ${INSTALL_DIR}
+#    - ${INSTALL_PREFIX_DIR}
 #    - ${CACHED_DIR}
 
 addons:
@@ -66,10 +66,9 @@ before_install:
   - virtualenv --version
 
 install:
-  - ./ninja-install.py --src ${SRC_DIR}/ninja --prefix ${INSTALL_DIR}
-  - ./binutils-install.py --src ${SRC_DIR}/binutils --prefix ${INSTALL_DIR}/cross
-  - ./gcc-install.py --src ${SRC_DIR}/gcc --prefix ${INSTALL_DIR}/cross
-  - ./qemu-install.py --src ${SRC_DIR}/qemu --prefix ${INSTALL_DIR}
+  - ./all-install.py \
+    --srcPrefxDir ${SRC_PREFIX_DIR} \
+    --installPrefixDir ${INSTALL_PREFIX_DIR}
 
 script:
   # Test that everything was installed

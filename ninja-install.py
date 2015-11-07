@@ -31,12 +31,13 @@ if __name__ == '__main__':
 
     args = installargs.InstallArgs(APP, VER, PREFIX)
 
-    dst_dir = os.path.abspath(args.o.prefix + '/bin')
+    dst_dir = os.path.abspath(args.o.installPrefixDir + '/bin')
     os.makedirs(dst_dir, exist_ok=True)
     dst = os.path.abspath(dst_dir + '/{app}'.format(app=APP))
 
     try:
-        output = subprocess.check_output([dst, '--version'])
+        output = subprocess.check_output([dst, '--version'],
+                stderr=subprocess.STDOUT)
         if output is None:
             output = b''
     except BaseException as err:
@@ -48,10 +49,10 @@ if __name__ == '__main__':
     else:
         print('compiling {app} {ver}'.format(app=APP, ver=args.o.ver))
         url = 'https://github.com/martine/ninja.git'
-        os.makedirs(args.o.src, exist_ok=True)
+        os.makedirs(args.o.srcPrefixDir, exist_ok=True)
 
-        utils.git('clone', [url, args.o.src])
-        os.chdir(args.o.src)
+        utils.git('clone', [url, args.o.srcPrefixDir])
+        os.chdir(args.o.srcPrefixDir)
 
         try:
             subprocess.check_call(['./configure.py', '--bootstrap'])
@@ -59,7 +60,7 @@ if __name__ == '__main__':
             traceback.print_exc()
             exit(1)
 
-        dst = os.path.abspath(args.o.prefix + '/bin')
+        dst = os.path.abspath(args.o.installPrefixDir + '/bin')
         os.makedirs(dst, exist_ok=True)
         dst = os.path.abspath(dst + '/{app}'.format(app=APP))
         try:

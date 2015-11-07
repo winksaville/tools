@@ -22,13 +22,13 @@ class InstallArgs:
     def __init__(self, app, defaultVer, defaultPrefix):
         parser = argparse.ArgumentParser()
         dflt=os.path.abspath('./' + app)
-        parser.add_argument('--src',
-                help='Source dir (default: {})'.format(dflt),
+        parser.add_argument('--srcPrefixDir',
+                help='Source prefix dir (default: {})'.format(dflt),
                 nargs='?',
                 default=dflt)
         dflt=os.path.abspath(os.environ['HOME'] + '/' + defaultPrefix)
-        parser.add_argument('--prefix',
-                help='Prefix for bin/ (default: {})'.format(dflt),
+        parser.add_argument('--installPrefixDir',
+                help='Install prefix dir (default: {})'.format(dflt),
                 nargs='?',
                 default=dflt)
         dflt = defaultVer

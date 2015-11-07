@@ -33,7 +33,7 @@ MPFR_URL = 'http://www.mpfr.org/mpfr-current/mpfr-3.1.3.tar.xz'
 MPC_URL = 'ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.3.tar.gz'
 APP='gcc'
 AN_APP='gcc'
-PREFIX='opt/cross'
+PREFIX='~/opt/cross'
 TARGET='arm-eabi'
 TARGET_DASH='-'
 
@@ -42,33 +42,34 @@ if __name__ == '__main__':
 
     args = installargs.InstallArgs(APP, VER, PREFIX)
 
-    dst_dir = os.path.abspath(args.o.prefix)
+    dst_dir = os.path.abspath(args.o.installPrefixDir)
     os.makedirs(dst_dir, exist_ok=True)
     dst = os.path.abspath(dst_dir + '/bin/{target}{target_dash}{an_app}'
             .format(target=TARGET, target_dash=TARGET_DASH, an_app=AN_APP))
-    print('gcc-install: dst=', dst)
-    print('gcc-install: args.o.src=', args.o.src)
-    print('gcc-install: args.o.ver=', args.o.ver)
-    print('gcc-install: args.o.prefix=', args.o.prefix)
+    #print('gcc-install: dst=', dst)
+    #print('gcc-install: args.o.srcPrefixDir=', args.o.srcPrefixDir)
+    #print('gcc-install: args.o.ver=', args.o.ver)
+    #print('gcc-install: args.o.installPrefixDir=', args.o.installPrefixDir)
 
     try:
-        output = subprocess.check_output([dst, '--version'])
+        output = subprocess.check_output([dst, '--version'],
+                stderr=subprocess.STDOUT)
         if output is None:
             output = b''
     except BaseException as err:
         output = b''
 
     if bytes(args.o.ver, 'utf-8') in output:
-        print('gcc-install: {app} {ver} is already installed'.format(app=APP, ver=args.o.ver))
+        print('{app} {ver} is already installed'.format(app=APP, ver=args.o.ver))
         exit(0)
     else:
         print('gcc-install:  compiling {app} {ver}'.format(app=APP, ver=args.o.ver))
 
-        gmp_path = os.path.join(os.path.dirname(args.o.src), 'gmp')
+        gmp_path = os.path.join(os.path.dirname(args.o.srcPrefixDir), 'gmp')
         print('gcc-install: gmp_path=', gmp_path)
-        mpfr_path = os.path.join(os.path.dirname(args.o.src), 'mpfr')
+        mpfr_path = os.path.join(os.path.dirname(args.o.srcPrefixDir), 'mpfr')
         print('gcc-install: mpfr_path=', mpfr_path)
-        mpc_path = os.path.join(os.path.dirname(args.o.src), 'mpc')
+        mpc_path = os.path.join(os.path.dirname(args.o.srcPrefixDir), 'mpc')
         print('gcc-install: mpc_path=', mpc_path)
 
         try:
@@ -77,13 +78,13 @@ if __name__ == '__main__':
             utils.wget_extract(MPC_URL, dst_path=mpc_path)
             if True:
                 # Use wget as its faster
-                utils.wget_extract(GCC_URL.format(args.o.ver), dst_path=args.o.src)
-                os.chdir(args.o.src)
+                utils.wget_extract(GCC_URL.format(args.o.ver), dst_path=args.o.srcPrefixDir)
+                os.chdir(args.o.srcPrefixDir)
             else:
                 # Use git, but this was slower
-                os.makedirs(args.o.src, exist_ok=True)
-                utils.git('clone', [GCC_GIT_REPO_URL, args.o.src])
-                os.chdir(args.o.src)
+                os.makedirs(args.o.srcPrefixDir, exist_ok=True)
+                utils.git('clone', [GCC_GIT_REPO_URL, args.o.srcPrefixDir])
+                os.chdir(args.o.srcPrefixDir)
                 utils.git('checkout', [CHECKOUT_LABEL])
 
             # Create the build directory and cd into it
@@ -94,7 +95,7 @@ if __name__ == '__main__':
             exit(1)
 
         # ls the directory with gcc, gmp, mpfr and mpc for debug purposes
-        #utils.bash('ls -al {}'.format(os.path.dirname(args.o.src)))
+        #utils.bash('ls -al {}'.format(os.path.dirname(args.o.srcPrefixDir)))
 
         try:
             print('gcc-install: configure')
@@ -108,7 +109,7 @@ if __name__ == '__main__':
                    ' --disable-nls ' +
                    ' --enable-languages=c,c++' +
                    ' --without-headers')
-                    .format(args.o.prefix, TARGET, gmp=gmp_path, mpfr=mpfr_path, mpc=mpc_path),
+                    .format(args.o.installPrefixDir, TARGET, gmp=gmp_path, mpfr=mpfr_path, mpc=mpc_path),
                    shell=True)
             print('gcc-install: make all-gcc')
             subprocess.run('make all-gcc -j {}'.format(multiprocessing.cpu_count()),

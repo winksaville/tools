@@ -25,7 +25,7 @@ import multiprocessing
 
 VER='2.25.1'
 APP='binutils-gdb'
-PREFIX='opt/cross'
+PREFIX='~/opt/cross'
 AN_APP='ld'
 TARGET='arm-eabi'
 TARGET_DASH='-'
@@ -35,29 +35,30 @@ if __name__ == '__main__':
 
     args = installargs.InstallArgs(APP, VER, PREFIX)
 
-    dst_dir = os.path.abspath(args.o.prefix)
+    dst_dir = os.path.abspath(args.o.installPrefixDir)
     os.makedirs(dst_dir, exist_ok=True)
     dst = os.path.abspath(dst_dir + '/bin/{target}{target_dash}{an_app}'
             .format(target=TARGET, target_dash=TARGET_DASH, an_app=AN_APP))
 
     try:
-        output = subprocess.check_output([dst, '--version'])
+        output = subprocess.check_output([dst, '--version'],
+                stderr=subprocess.STDOUT)
         if output is None:
             output = b''
     except BaseException as err:
         output = b''
 
     if bytes(args.o.ver, 'utf-8') in output:
-        print('{app} {ver} is already installed'.format(app=args.o.src, ver=VER))
+        print('{app} {ver} is already installed'.format(app=APP, ver=VER))
         exit(0)
     else:
-        print('compiling {app} {ver}'.format(app=args.o.src, ver=VER))
-        os.makedirs(args.o.src, exist_ok=True)
+        print('compiling {app} {ver}'.format(app=args.o.srcPrefixDir, ver=VER))
+        os.makedirs(args.o.srcPrefixDir, exist_ok=True)
 
         try:
             url = 'git://sourceware.org/git/binutils-gdb.git'
-            utils.git('clone', [url, args.o.src])
-            os.chdir(args.o.src)
+            utils.git('clone', [url, args.o.srcPrefixDir])
+            os.chdir(args.o.srcPrefixDir)
             version = VER.replace('.','_')
             utils.git('checkout', ['binutils-{ver}'.format(ver=version)])
             os.mkdir('build')
@@ -68,7 +69,7 @@ if __name__ == '__main__':
 
         print('configure')
         utils.bash('../configure --prefix={0} --target={1} --disable-nls'
-                .format(args.o.prefix, TARGET))
+                .format(args.o.installPrefixDir, TARGET))
         utils.bash('make all -j {}'.format(multiprocessing.cpu_count()))
         utils.bash('make install')
 
