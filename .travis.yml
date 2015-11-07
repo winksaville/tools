@@ -67,7 +67,7 @@ before_install:
 
 install:
   - ./all-install.py \
-    --srcPrefxDir ${SRC_PREFIX_DIR} \
+    --srcPrefixDir ${SRC_PREFIX_DIR} \
     --installPrefixDir ${INSTALL_PREFIX_DIR}
 
 script:
