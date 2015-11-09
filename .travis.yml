@@ -85,11 +85,11 @@ script:
     #- qemu-system-arm --version
 
   # Test individual building and forced installation
-    - ./install.py ninja meson --forceInstall
-    - which ninja
-    - ninja --version
-    - which meson
-    - meson -v
+  - ./install.py ninja meson --forceInstall
+  - which ninja
+  - ninja --version
+  - which meson
+  - meson -v
   
   #  # Test we can install at a new location without forceInstall
   #  - ./install.py all --codePrefixDir ALT_CODE_PREFIX_DIR --installPrefixDir ALT_INSTALL_PREFIX_DIR
