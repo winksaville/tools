@@ -21,8 +21,8 @@ python:
 env:
   global:
     # Must match pareseisntallargs.py
-    - DEFAULT_CODE_PREFIX_DIR = '~/tmp'
-    - DEFAULT_INSTALL_PREFIX_DIR = '~/opt'
+    - DEFAULT_CODE_PREFIX_DIR='~/tmp'
+    - DEFAULT_INSTALL_PREFIX_DIR='~/opt'
     - ALT_CODE_PREFIX_DIR=$HOME/tmpx
     - ALT_INSTALL_PREFIX_DIR=$HOME/optx
 
