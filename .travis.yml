@@ -50,7 +50,7 @@ before_install:
   - export PATH2=${ALT_INSTALL_PREFIX_DIR}/cross/bin:$PATH2
 
   # Setup a symbolic link to /bin/bash
-  - if [ ! -L ${BIN_DIR}/sh ]; then ln -s /bin/bash ${BIN_DIR}/sh; fi
+  #- if [ ! -L ${BIN_DIR}/sh ]; then ln -s /bin/bash ${BIN_DIR}/sh; fi
 
   # Check that python2 and 3 is installed and virtualenv
   # which are used by the xxx-install.py scripts
