@@ -46,8 +46,10 @@ before_install:
   # Setup the environment for Alternate install location
   - export PATH1=${INSTALL_PREFIX_DIR}/bin:$PATH
   - export PATH1=${INSTALL_PREFIX_DIR}/cross/bin:$PATH1
+  - echo PATH1=$PATH1
   - export PATH2=${ALT_INSTALL_PREFIX_DIR}/bin:$PATH
   - export PATH2=${ALT_INSTALL_PREFIX_DIR}/cross/bin:$PATH2
+  - echo PATH2=$PATH2
 
   # Setup a symbolic link to /bin/bash
   #- if [ ! -L ${BIN_DIR}/sh ]; then ln -s /bin/bash ${BIN_DIR}/sh; fi
@@ -68,7 +70,9 @@ script:
   - ./install.py all
 
   # Test that everything was installed
+  - echo PATH=$PATH
   - export PATH=$PATH1
+  - echo after setting PATH to PATH1 PATH=$PATH
   - which ninja
   - ninja --version
   - which meson
@@ -81,16 +85,16 @@ script:
     #- qemu-system-arm --version
 
   # Test some individual with forced installation
-  - ./install.py ninja meson --forceInstall
-  - which ninja
-  - ninja --version
-  - which meson
-  - meson -v
-
-  # Test we can install at a new location without forcing
-  - ./install.py all --codePrefixDir ALT_CODE_PREFIX_DIR --installPrefixDir ALT_INSTALL_PREFIX_DIR
-  - export PATH=PATH2
-  - which ninja
-  - ninja --version
-  - which meson
-  - meson -v
+  #  - ./install.py ninja meson --forceInstall
+  #  - which ninja
+  #  - ninja --version
+  #  - which meson
+  #  - meson -v
+  #
+  #  # Test we can install at a new location without forcing
+  #  - ./install.py all --codePrefixDir ALT_CODE_PREFIX_DIR --installPrefixDir ALT_INSTALL_PREFIX_DIR
+  #  - export PATH=PATH2
+  #  - which ninja
+  #  - ninja --version
+  #  - which meson
+  #  - meson -v
