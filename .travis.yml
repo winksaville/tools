@@ -73,7 +73,8 @@ script:
   - echo PATH=$PATH
   - export PATH=$PATH1
   - echo after setting PATH to PATH1 PATH=$PATH
-    #- which ninja
+  - echo $(which ninja)
+  - which ninja
   - ninja --version
     #- which meson
   - meson -v
