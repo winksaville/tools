@@ -91,10 +91,10 @@ script:
   - which meson
   - meson -v
   
-  #  # Test we can install at a new location without forceInstall
-  #  - ./install.py all --codePrefixDir ALT_CODE_PREFIX_DIR --installPrefixDir ALT_INSTALL_PREFIX_DIR
-  #  - export PATH=PATH2
-  #  - which ninja
-  #  - ninja --version
-  #  - which meson
-  #  - meson -v
+  # Test we can install at a new location without forceInstall
+  - ./install.py all --codePrefixDir ALT_CODE_PREFIX_DIR --installPrefixDir ALT_INSTALL_PREFIX_DIR
+  - export PATH=$PATH2
+  - which ninja
+  - ninja --version
+  - which meson
+  - meson -v
