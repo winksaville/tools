@@ -44,8 +44,8 @@ addons:
 
 before_install:
   # Setup the environment for Alternate install location
-  - export PATH1=${INSTALL_PREFIX_DIR}/bin:$PATH
-  - export PATH1=${INSTALL_PREFIX_DIR}/cross/bin:$PATH1
+  - export PATH1=${DEFAULT_INSTALL_PREFIX_DIR}/bin:$PATH
+  - export PATH1=${DEFAULT_INSTALL_PREFIX_DIR}/cross/bin:$PATH1
   - echo PATH1=$PATH1
   - export PATH2=${ALT_INSTALL_PREFIX_DIR}/bin:$PATH
   - export PATH2=${ALT_INSTALL_PREFIX_DIR}/cross/bin:$PATH2
