@@ -20,16 +20,12 @@ import traceback
 from urllib.parse import urlparse
 
 def git(cmd, params):
-    try:
-        if cmd is None:
-            return
-        cmds = ['git', cmd]
-        if not params is None:
-            cmds.extend(params)
-        subprocess.check_call(cmds)
-    except BaseException as ex:
-        traceback.print_exc()
-        exit(1)
+    if cmd is None:
+        return
+    cmds = ['git', cmd]
+    if not params is None:
+        cmds.extend(params)
+    subprocess.check_call(cmds)
 
 def wget_extract(url, tmp_dir='.', dst_path='.'):
     '''Gets a file using wget and then extracts the tar file.

@@ -20,13 +20,11 @@ python:
 
 env:
   global:
-    - INSTALL_PREFIX_DIR=$HOME/opt
-    - BIN_DIR=${INSTALL_PREFIX_DIR}/bin
-    - CROSS_BIN_DIR=${INSTALL_PREFIX_DIR}/cross/bin
-    - CACHE_DIR=$HOME/cached
-    - SRC_PREFIX_DIR=$HOME/tmp
-  matrix:
-    - Platform=Posix
+    # Must match pareseisntallargs.py
+    - DEFAULT_CODE_PREFIX_DIR = '~/tmp'
+    - DEFAULT_INSTALL_PREFIX_DIR = '~/opt'
+    - ALT_CODE_PREFIX_DIR=$HOME/tmpx
+    - ALT_INSTALL_PREFIX_DIR=$HOME/optx
 
 # Don't cache our testing of install's
 #cache:
@@ -45,11 +43,11 @@ addons:
         #- qemu-system-arm  # Doesn't install!!
 
 before_install:
-  # Setup the environment
-  - mkdir -p ${BIN_DIR}
-  - mkdir -p ${CROSS_BIN_DIR}
-  - export PATH=${BIN_DIR}:$PATH
-  - export PATH=${CROSS_BIN_DIR}:$PATH
+  # Setup the environment for Alternate install location
+  - export PATH1=${INSTALL_PREFIX_DIR}/bin:$PATH
+  - export PATH1=${INSTALL_PREFIX_DIR}/cross/bin:$PATH1
+  - export PATH2=${ALT_INSTALL_PREFIX_DIR}/bin:$PATH
+  - export PATH2=${ALT_INSTALL_PREFIX_DIR}/cross/bin:$PATH2
 
   # Setup a symbolic link to /bin/bash
   - if [ ! -L ${BIN_DIR}/sh ]; then ln -s /bin/bash ${BIN_DIR}/sh; fi
@@ -65,16 +63,34 @@ before_install:
   - which virtualenv
   - virtualenv --version
 
-install:
-  - ./all-install.py --srcPrefixDir ${SRC_PREFIX_DIR} --installPrefixDir ${INSTALL_PREFIX_DIR}
-
 script:
+  # Install everything at the defaults
+  - ./install.py all
+
   # Test that everything was installed
+  - export PATH=$PATH1
   - which ninja
   - ninja --version
-  - which arm-eabi-ld
-  - arm-eabi-ld --version
-  - which arm-eabi-gcc
-  - arm-eabi-gcc --version
-  - which qemu-system-arm
-  - qemu-system-arm --version
+  - which meson
+  - meson -v
+    #- which arm-eabi-ld
+    #- arm-eabi-ld --version
+    #- which arm-eabi-gcc
+    #- arm-eabi-gcc --version
+    #- which qemu-system-arm
+    #- qemu-system-arm --version
+
+  # Test some individual with forced installation
+  - ./install.py ninja meson --forceInstall
+  - which ninja
+  - ninja --version
+  - which meson
+  - meson -v
+
+  # Test we can install at a new location without forcing
+  - ./install.py all --codePrefixDir ALT_CODE_PREFIX_DIR --installPrefixDir ALT_INSTALL_PREFIX_DIR
+  - export PATH=PATH2
+  - which ninja
+  - ninja --version
+  - which meson
+  - meson -v
