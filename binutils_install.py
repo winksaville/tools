@@ -72,9 +72,13 @@ class Installer:
             os.mkdir('build')
             os.chdir('build')
 
-            utils.bash('../configure --prefix={0} --target={1} --disable-nls'
-                    .format(self.args.installPrefixDir, TARGET))
-            utils.bash('make all -j {}'.format(multiprocessing.cpu_count()))
+            subprocess.run('../configure --prefix={0} --target={1} --disable-nls'
+                    .format(self.args.installPrefixDir, TARGET),
+                    shell=True,
+                    stdout=subprocess.DEVNULL) # Too much logging overflows 4MB travis-ci log limit
+            subprocess.run('make all -j {}'.format(multiprocessing.cpu_count()),
+                    shell=True,
+                    stdout=subprocess.DEVNULL) # Too much logging overflows 4MB travis-ci log limit
             utils.bash('make install')
 
         return retval
