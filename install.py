@@ -20,6 +20,7 @@ import parseinstallargs
 import ninja_install
 import meson_install
 import binutils_install
+import gcc_install
 
 import argparse
 import sys
