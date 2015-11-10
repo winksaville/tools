@@ -79,8 +79,8 @@ script:
   - meson -v
   - which arm-eabi-ld
   - arm-eabi-ld --version
-    #- which arm-eabi-gcc
-    #- arm-eabi-gcc --version
+  - which arm-eabi-gcc
+  - arm-eabi-gcc --version
     #- which qemu-system-arm
     #- qemu-system-arm --version
 
@@ -98,5 +98,10 @@ script:
   - ninja --version
   - which meson
   - meson -v
-  - which arm-eabi-ld
-  - arm-eabi-ld --version
+    #These take a long time, for now don't do a second time
+    #- which arm-eabi-ld
+    #- arm-eabi-ld --version
+    #- which arm-eabi-gcc
+    #- arm-eabi-gcc --version
+    #- which qemu-system-arm
+    #- qemu-system-arm --version

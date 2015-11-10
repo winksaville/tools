@@ -65,7 +65,7 @@ if len(args.apps) == 0:
     sys.exit(0)
 
 if 'all' in args.apps:
-    args.apps = ['ninja', 'meson', 'binutils']
+    args.apps = ['ninja', 'meson', 'binutils', 'gcc']
 
 # Install the apps
 for app in args.apps:
@@ -77,6 +77,9 @@ for app in args.apps:
         installer.install()
     elif app == 'binutils':
         installer = binutils_install.Installer()
+        installer.install()
+    elif app == 'gcc':
+        installer = gcc_install.Installer()
         installer.install()
     else:
         print('Unknow app:', app)
