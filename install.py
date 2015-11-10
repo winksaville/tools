@@ -19,6 +19,7 @@
 import parseinstallargs
 import ninja_install
 import meson_install
+import binutils_install
 
 import argparse
 import sys
@@ -64,7 +65,7 @@ if len(args.apps) == 0:
     sys.exit(0)
 
 if 'all' in args.apps:
-    args.apps = ['ninja', 'meson']
+    args.apps = ['ninja', 'meson', 'binutils']
 
 # Install the apps
 for app in args.apps:
@@ -73,6 +74,9 @@ for app in args.apps:
         installer.install()
     elif app == 'meson':
         installer = meson_install.Installer()
+        installer.install()
+    elif app == 'binutils':
+        installer = binutils_install.Installer()
         installer.install()
     else:
         print('Unknow app:', app)
