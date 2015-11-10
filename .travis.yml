@@ -70,9 +70,7 @@ script:
   - ./install.py all
 
   # Test that everything was installed
-  - echo PATH=$PATH
   - export PATH=$PATH1
-  - echo after setting PATH to PATH1 PATH=$PATH
   - which ninja
   - ninja --version
   - which meson
@@ -81,10 +79,12 @@ script:
   - arm-eabi-ld --version
   - which arm-eabi-gcc
   - arm-eabi-gcc --version
-    #- which qemu-system-arm
-    #- qemu-system-arm --version
+  - which qemu-system-arm
+  - qemu-system-arm --version
 
-  # Test individual building and forced installation
+  # Test individual building and forced installation.
+  # This is only a subset as it's already taking about
+  # 30 minutes.
   - ./install.py ninja meson --forceInstall
   - which ninja
   - ninja --version
@@ -98,10 +98,9 @@ script:
   - ninja --version
   - which meson
   - meson -v
-    #These take a long time, for now don't do a second time
-    #- which arm-eabi-ld
-    #- arm-eabi-ld --version
-    #- which arm-eabi-gcc
-    #- arm-eabi-gcc --version
-    #- which qemu-system-arm
-    #- qemu-system-arm --version
+  - which arm-eabi-ld
+  - arm-eabi-ld --version
+  - which arm-eabi-gcc
+  - arm-eabi-gcc --version
+  - which qemu-system-arm
+  - qemu-system-arm --version

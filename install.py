@@ -14,13 +14,14 @@
 # see the license for the specific language governing permissions and
 # limitations under the license.
 
-# Install all of the vendor tools
+# Install all or a specific set of the vendor tools
 
 import parseinstallargs
 import ninja_install
 import meson_install
 import binutils_install
 import gcc_install
+import qemu_install
 
 import argparse
 import sys
@@ -28,45 +29,16 @@ import os
 import subprocess
 import argparse
 
-#CODE_PREFIX_DIR='~/tmp'
-#INSTALL_PREFIX_DIR='~/opt'
+all_apps = ['ninja', 'meson', 'binutils', 'gcc', 'qemu']
 
-#class InstallArgs:
-#    def __init__(self, defaultSrcPrefixDir, defaultInstallPrefixDir):
-#        parser = argparse.ArgumentParser()
-#
-#        dflt=os.path.abspath(os.path.expanduser(defaultSrcPrefixDir))
-#        parser.add_argument('--codePrefixDir',
-#                help='Source prefix dir (default: {})'.format(dflt),
-#                nargs='?',
-#                default=dflt)
-#
-#        dflt=os.path.abspath(os.path.expanduser(defaultInstallPrefixDir))
-#        parser.add_argument('--installPrefixDir',
-#                help='Install prefix dir (default: {})'.format(dflt),
-#                nargs='?',
-#                default=dflt)
-#
-#        self.o = parser.parse_args()
-
-args = parseinstallargs.InstallArgs('all')
-
-#THIS_DIR=os.path.abspath(os.path.dirname(sys.argv[0]))
-#CODE_PREFIX_DIR=args.codePrefixDir
-#INSTALL_PREFIX_DIR=args.installPrefixDir
-#INSTALL_PREFIX_CROSS_DIR=os.path.join(args.installPrefixDir, 'cross')
-
-#print('THIS_DIR =', THIS_DIR)
-#print('CODE_PREFIX_DIR =', CODE_PREFIX_DIR)
-#print('INSTALL_PREFIX_DIR =', INSTALL_PREFIX_DIR)
-#print('INSTALL_PREFIX_CROSS_DIR =', INSTALL_PREFIX_CROSS_DIR)
+args = parseinstallargs.InstallArgs('all', apps=all_apps)
 
 if len(args.apps) == 0:
-    argparse.ArgumentParser.print_help()
+    args.print_help()
     sys.exit(0)
 
 if 'all' in args.apps:
-    args.apps = ['ninja', 'meson', 'binutils', 'gcc']
+    args.apps = all_apps
 
 # Install the apps
 for app in args.apps:
@@ -82,19 +54,9 @@ for app in args.apps:
     elif app == 'gcc':
         installer = gcc_install.Installer()
         installer.install()
+    elif app == 'qemu':
+        installer = qemu_install.Installer()
+        installer.install()
     else:
-        print('Unknow app:', app)
+        print('Unknown app:', app)
         sys.exit(1)
-
-#subprocess.check_call('{0}/ninja-install.py --codePrefixDir {1}/ninja --installPrefixDir {2}'
-#        .format(THIS_DIR, CODE_PREFIX_DIR, INSTALL_PREFIX_DIR),
-#        shell=True)
-#subprocess.check_call('{0}/binutils-install.py --codePrefixDir {1}/binutils --installPrefixDir {2}'
-#        .format(THIS_DIR, CODE_PREFIX_DIR, INSTALL_PREFIX_CROSS_DIR),
-#        shell=True)
-#subprocess.check_call('{0}/gcc-install.py --codePrefixDir {1}/gcc --installPrefixDir {2}'
-#        .format(THIS_DIR, CODE_PREFIX_DIR, INSTALL_PREFIX_CROSS_DIR),
-#        shell=True)
-#subprocess.check_call('{0}/qemu-install.py --codePrefixDir {1}/qemu --installPrefixDir {2}'
-#        .format(THIS_DIR, CODE_PREFIX_DIR, INSTALL_PREFIX_DIR),
-#        shell=True)

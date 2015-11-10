@@ -20,15 +20,15 @@ import os
 DEFAULT_CODE_PREFIX_DIR = '~/tmp'
 DEFAULT_INSTALL_PREFIX_DIR = '~/opt'
 
-class InstallArgs:
-    def __init__(self, app, defaultVer=None, defaultCodePrefixDir=None,
+class InstallArgs(argparse.ArgumentParser):
+    def __init__(self, app, apps=None, defaultVer=None, defaultCodePrefixDir=None,
             defaultInstallPrefixDir=None, defaultForceInstall=None):
         parser = argparse.ArgumentParser()
 
         self.app = app
+        self.appList = apps
 
-        parser.add_argument('apps', default=[], nargs='*',
-                help='List of applicatons')
+        parser.add_argument('apps', default=[], nargs='*', help='Applicatons to install: {}'.format(apps))
 
         if defaultForceInstall is None:
             defaultForceInstall = False
@@ -62,10 +62,26 @@ class InstallArgs:
                 nargs='?',
                 default=defaultVer);
 
-        # Add parser to InstallArgs namespace
+        # TODO: We must do this so parser "arguments"
+        # (apps, forceInstall, codePrefixDir ...)
+        # are available here and by instances of InstallArgs.
         parser.parse_args(namespace=self)
 
         # Be sure the prefix directory paths are expanded and absolute
         self.codePrefixDir = os.path.abspath(os.path.expanduser(self.codePrefixDir))
         self.installPrefixDir = os.path.abspath(os.path.expanduser(self.installPrefixDir))
 
+        # TODO: Why this trickiness, see printHelp below
+        self.printHelp = parser.print_help
+
+
+    # TODO: Why do I need to "override" print_help and
+    # invoke printHelp which I've previously assigned?
+    # I whould have expected to be able to do:
+    #   args = InstallArgs('all')j
+    #   args.print_help()
+    #
+    # Since this class inherits from ArgumentParser I would
+    # have expected not having to override it at all!!!!
+    def print_help(self):
+        self.printHelp()

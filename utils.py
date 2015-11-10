@@ -46,14 +46,18 @@ def wget_extract(url, tmp_dir='.', dst_path='.'):
     subprocess.check_call(['tar', '-xf', wgetdst_path, '--strip-components=1', '-C', dst_path])
     os.remove(wgetdst_path)
 
-def bash(cmd):
+def bash(cmd, stdout=None, stderr=None):
     if cmd is None:
         return
     print('bash: cmd=', cmd)
-    subprocess.check_call(['bash', '-c', cmd])
 
-def bashPython2(cmd):
-    bash('[ ! -d venv2 ] && virtualenv --python=python2 venv2; ' +
-         'source venv2/bin/activate;' +
-         cmd)
+    subprocess.run(['bash', '-c', cmd],
+            stdout=stdout,
+            stderr=stderr,
+            check=True)
+
+def bashPython2(cmd, stdout=None, stderr=None):
+    bash('[ ! -d venv2 ] && virtualenv --python=python2 venv2 ; ' +
+         'source venv2/bin/activate ; ' +
+         cmd, stdout, stderr)
 
