@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-echo which bash=$(which bash)
-echo bash version=$(bash --version)
-echo BASH_VERSION=${BASH_VERSION}
-echo BASH_VERSINFO=${BASH_VERSINFO}
-
 # Copyright 2015 wink saville
 #
 # licensed under the apache license, version 2.0 (the "license");
@@ -47,18 +42,18 @@ test_installed () {
   params[versionParam]="--version"
 
   for param in "$@"; do
-    echo param=$param
+    #echo param=$param
 
     # param should be "name=value" split at the '='
     # and store in nameValueArray
     IFS="=" read -a nameValueArray <<< "$param"
-    echo nameValueArray[0]=${nameValueArray[0]}
-    echo nameValueArray[1]=${nameValueArray[1]}
+    #echo nameValueArray[0]=${nameValueArray[0]}
+    #echo nameValueArray[1]=${nameValueArray[1]}
 
     # Store the name and value into the params dictionary
     params[${nameValueArray[0]}]=${nameValueArray[1]}
-    echo params keys="${!params[@]}"
-    echo params values="${params[@]}"
+    #echo params keys="${!params[@]}"
+    #echo params values="${params[@]}"
   done
 
   # Capture all of which's output so as to not spew console
@@ -69,8 +64,7 @@ test_installed () {
   #echo PATH=$PATH
 
   # Check if ${app{ installed at all
-  [[ ${whichExitCode} != 0 ]] && \
-    echo ${app} not installed && exit 1
+  [[ ${whichExitCode} != 0 ]] && echo ${app} not installed && exit 1
 
   # It was but is it in the expected directories
   whichDir=$(dirname ${whichOutput})
@@ -85,14 +79,15 @@ test_installed () {
   expectedVer=$(${params[getVersion]} printVer 2>&1)
   [[ ${actualVer} != *"${expectedVer}"* ]] && \
     echo ${app} is ${actualVer} expected ${expectedVer} && exit 1
+
   echo ${app} OK
 }
 
 test_all () {
-  #test_installed ninja
+  test_installed ninja
   test_installed meson versionParam=-v
-  #test_installed arm-eabi-ld getVersion=${THIS_DIR}/binutils_install.py
-  #test_installed qemu-system-arm getVersion=${THIS_DIR}/qemu_install.py
+  test_installed arm-eabi-ld getVersion=${THIS_DIR}/binutils_install.py
+  test_installed qemu-system-arm getVersion=${THIS_DIR}/qemu_install.py
 
   #TODO: gcc is not the same version as binutils, need a fix
   #test_installed arm-eabi-gcc getVersion=${THIS_DIR}/binutils_install.py
@@ -111,6 +106,7 @@ if [[ $# == 0 ]]; then
 fi
 
 
+# Add DFLT's to PATH
 INSTALL_PATHS=${DFLT_INSTALL_PATHS}
 export PATH=${INSTALL_PATHS}:${ORG_PATH}
 
@@ -120,39 +116,37 @@ if [[ $1 == "quick" ]]; then
 fi
 
 if [[ $1 == "full" ]]; then
-  #echo "test.sh: full install all"
-  #${THIS_DIR}/install.py all
-  echo "test.sh: meson ONLY"
-  ${THIS_DIR}/install.py meson
+  echo "test.sh: install.py all"
+  ${THIS_DIR}/install.py all
   [[ $? != 0 ]] && echo "Error installing" && exit 1
 
   # Test that everything was installed
   echo "test.sh: test_all"
   test_all
 
-  ## Test individual building and forced installation.
-  ## This is only a subset as it's already taking about
-  ## 30 minutes.
-  #echo "test.sh: install ninja meson --forceInstall"
-  #${THIS_DIR}/install.py ninja meson --forceInstall
-  #[[ $? != 0 ]] && echo "Error forceInstall" && exit 1
+  # Test individual building and forced installation.
+  # This is only a subset as it's already taking about
+  # 30 minutes.
+  echo "test.sh: install ninja meson --forceInstall"
+  ${THIS_DIR}/install.py ninja meson --forceInstall
+  [[ $? != 0 ]] && echo "Error forceInstall" && exit 1
 
-  ## Test all again still using the DFLT_INSTALL_PATHS
-  #echo "test.sh: test_all after install ninja meson"
-  #test_all
+  # Test all again still using the DFLT_INSTALL_PATHS
+  echo "test.sh: test_all after install ninja meson"
+  test_all
 
-  ## Test we can install on the ALT prefixes without forceInstall
-  #echo "test.sh: install to ALT location without forceInstall"
-  #rm -rf ${ALT_CODE_PREFIX_DIR}
-  #rm -rf ${ALT_INSTALL_PREFIX_DIR}
-  #${THIS_DIR}/install.py all --codePrefixDir ${ALT_CODE_PREFIX_DIR} --installPrefixDir ${ALT_INSTALL_PREFIX_DIR}
-  #[[ $? != 0 ]] && echo "Error alternate install" && exit 1
+  # Test we can install on the ALT prefixes without forceInstall
+  echo "test.sh: install to ALT location without forceInstall"
+  rm -rf ${ALT_CODE_PREFIX_DIR}
+  rm -rf ${ALT_INSTALL_PREFIX_DIR}
+  ${THIS_DIR}/install.py all --codePrefixDir ${ALT_CODE_PREFIX_DIR} --installPrefixDir ${ALT_INSTALL_PREFIX_DIR}
+  [[ $? != 0 ]] && echo "Error alternate install" && exit 1
 
-  ## Test all on the ALT paths
-  #echo "test.sh: test_all ALT location"
-  #INSTALL_PATHS=${ALT_INSTALL_PATHS}
-  #export PATH=${INSTALL_PATHS}:${ORG_PATH}
-  #test_all
+  # Test all on the ALT paths
+  echo "test.sh: test_all ALT location"
+  INSTALL_PATHS=${ALT_INSTALL_PATHS}
+  export PATH=${INSTALL_PATHS}:${ORG_PATH}
+  test_all
 else
   help
 fi
