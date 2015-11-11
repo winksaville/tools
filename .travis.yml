@@ -18,14 +18,6 @@ sudo: false
 python:
   - "3.5"
 
-env:
-  global:
-    # Must match pareseisntallargs.py
-    - DEFAULT_CODE_PREFIX_DIR=$HOME/tmp
-    - DEFAULT_INSTALL_PREFIX_DIR=$HOME/opt
-    - ALT_CODE_PREFIX_DIR=$HOME/tmpx
-    - ALT_INSTALL_PREFIX_DIR=$HOME/optx
-
 # Don't cache our testing of install's
 #cache:
 #  directories:
@@ -43,17 +35,6 @@ addons:
         #- qemu-system-arm  # Doesn't install!!
 
 before_install:
-  # Setup the environment for Alternate install location
-  - export PATH1=${DEFAULT_INSTALL_PREFIX_DIR}/bin:$PATH
-  - export PATH1=${DEFAULT_INSTALL_PREFIX_DIR}/cross/bin:$PATH1
-  - echo PATH1=$PATH1
-  - export PATH2=${ALT_INSTALL_PREFIX_DIR}/bin:$PATH
-  - export PATH2=${ALT_INSTALL_PREFIX_DIR}/cross/bin:$PATH2
-  - echo PATH2=$PATH2
-
-  # Setup a symbolic link to /bin/bash
-  #- if [ ! -L ${BIN_DIR}/sh ]; then ln -s /bin/bash ${BIN_DIR}/sh; fi
-
   # Check that python2 and 3 is installed and virtualenv
   # which are used by the xxx-install.py scripts
   - which python
@@ -66,41 +47,4 @@ before_install:
   - virtualenv --version
 
 script:
-  # Install everything at the defaults
-  - ./install.py all
-
-  # Test that everything was installed
-  - export PATH=$PATH1
-  - which ninja
-  - ninja --version
-  - which meson
-  - meson -v
-  - which arm-eabi-ld
-  - arm-eabi-ld --version
-  - which arm-eabi-gcc
-  - arm-eabi-gcc --version
-  - which qemu-system-arm
-  - qemu-system-arm --version
-
-  # Test individual building and forced installation.
-  # This is only a subset as it's already taking about
-  # 30 minutes.
-  - ./install.py ninja meson --forceInstall
-  - which ninja
-  - ninja --version
-  - which meson
-  - meson -v
-  
-  # Test we can install at a new location without forceInstall
-  - ./install.py all --codePrefixDir ${ALT_CODE_PREFIX_DIR} --installPrefixDir ${ALT_INSTALL_PREFIX_DIR}
-  - export PATH=$PATH2
-  - which ninja
-  - ninja --version
-  - which meson
-  - meson -v
-  - which arm-eabi-ld
-  - arm-eabi-ld --version
-  - which arm-eabi-gcc
-  - arm-eabi-gcc --version
-  - which qemu-system-arm
-  - qemu-system-arm --version
+  - ./test.sh full

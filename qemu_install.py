@@ -80,5 +80,8 @@ class Installer:
 
 if __name__ == '__main__':
 
-    installer = Installer()
-    installer.install()
+    if len(sys.argv) == 2 and sys.argv[1] == 'printVer':
+        print(DEFAULT_VER)
+    else:
+        installer = Installer()
+        installer.install()

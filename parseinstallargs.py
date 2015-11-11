@@ -21,8 +21,8 @@ DEFAULT_CODE_PREFIX_DIR = '~/tmp'
 DEFAULT_INSTALL_PREFIX_DIR = '~/opt'
 
 class InstallArgs(argparse.ArgumentParser):
-    def __init__(self, app, apps=None, defaultVer=None, defaultCodePrefixDir=None,
-            defaultInstallPrefixDir=None, defaultForceInstall=None):
+    def __init__(self, app, defaultVer=None, defaultCodePrefixDir=None,
+            defaultInstallPrefixDir=None, defaultForceInstall=None, apps=None) :
         parser = argparse.ArgumentParser()
 
         self.app = app
@@ -68,8 +68,10 @@ class InstallArgs(argparse.ArgumentParser):
         parser.parse_args(namespace=self)
 
         # Be sure the prefix directory paths are expanded and absolute
-        self.codePrefixDir = os.path.abspath(os.path.expanduser(self.codePrefixDir))
-        self.installPrefixDir = os.path.abspath(os.path.expanduser(self.installPrefixDir))
+        self.codePrefixDir = os.path.abspath(
+                os.path.expanduser(self.codePrefixDir))
+        self.installPrefixDir = os.path.abspath(
+                os.path.expanduser(self.installPrefixDir))
 
         # TODO: Why this trickiness, see printHelp below
         self.printHelp = parser.print_help

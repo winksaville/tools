@@ -32,10 +32,10 @@ TARGET_DASH='-'
 CHECKOUT_LABEL='gcc_{}_release'.format(DEFAULT_VER.replace('.','_'))
 GCC_GIT_REPO_URL = 'https://github.com/gcc-mirror/gcc.git'
 #GCC_GIT_REPO_URL = 'https://github.com/winksaville/gcc-5.2.0.git' # My debug version
-GCC_URL = 'http://ftp.gnu.org/gnu/gcc/gcc-{0}/gcc-{0}.tar.bz2'
-GMP_URL = 'https://gmplib.org/download/gmp/gmp-6.0.0a.tar.xz'
-MPFR_URL = 'http://www.mpfr.org/mpfr-current/mpfr-3.1.3.tar.xz'
-MPC_URL = 'ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.3.tar.gz'
+GCC_URL  = 'http://ftp.gnu.org/gnu/gcc/gcc-{0}/gcc-{0}.tar.bz2'
+GMP_URL  = 'http://ftp.gnu.org/gnu/gmp/gmp-6.0.0a.tar.xz'
+MPFR_URL = 'http://ftp.gnu.org/gnu/mpfr/mpfr-3.1.3.tar.xz'
+MPC_URL  = 'http://ftp.gnu.org/gnu/mpc/mpc-1.0.3.tar.gz'
 
 class Installer:
     '''Installer'''
@@ -132,5 +132,8 @@ class Installer:
 
 if __name__ == '__main__':
 
-    installer = Installer()
-    installer.install()
+    if len(sys.argv) == 2 and sys.argv[1] == 'printVer':
+        print(DEFAULT_VER)
+    else:
+        installer = Installer()
+        installer.install()
