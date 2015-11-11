@@ -32,6 +32,7 @@ addons:
       - libmpfr-dev # needed by gcc
       - libmpc-dev # needed by gcc
       - re2c # Needed by ninja
+      - realpath # Needed by my test.sh script
         #- qemu-system-arm  # Doesn't install!!
 
 before_install:
