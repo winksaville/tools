@@ -54,24 +54,20 @@ class Installer:
             print('{app} {ver} is already installed'
                     .format(app=self.args.app, ver=self.args.ver))
         else:
-            try:
-                print('compiling {app} {ver}'
-                        .format(app=self.args.app, ver=self.args.ver))
-                code_dir = os.path.join(self.args.codePrefixDir, self.args.app)
-                if self.args.forceInstall:
-                    shutil.rmtree(code_dir, ignore_errors=True)
-                os.makedirs(code_dir)
+            print('compiling {app} {ver}'
+                    .format(app=self.args.app, ver=self.args.ver))
+            code_dir = os.path.join(self.args.codePrefixDir, self.args.app)
+            if self.args.forceInstall:
+                shutil.rmtree(code_dir, ignore_errors=True)
+            os.makedirs(code_dir)
 
-                utils.git('clone', [URL, code_dir])
-                os.chdir(code_dir)
-                utils.git('checkout', [self.args.ver])
+            utils.git('clone', [URL, code_dir])
+            os.chdir(code_dir)
+            utils.git('checkout', [self.args.ver])
 
-                # Not a list but a string
-                subprocess.check_call('./install_meson.py --prefix {}'
-                    .format(self.args.installPrefixDir), shell=True)
-            except:
-                traceback.print_exc()
-                retval = 1
+            # Not a list but a string
+            subprocess.check_call('./install_meson.py --prefix {}'
+                .format(self.args.installPrefixDir), shell=True)
 
         return retval 
 
