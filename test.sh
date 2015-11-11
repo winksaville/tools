@@ -51,7 +51,7 @@ test_installed () {
 
     # param should be "name=value" split at the '='
     # and store in nameValueArray
-    IFS='=' read -a nameValueArray <<< $param
+    IFS="=" read -a nameValueArray <<< "$param"
     echo nameValueArray[0]=${nameValueArray[0]}
     echo nameValueArray[1]=${nameValueArray[1]}
 
