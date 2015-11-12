@@ -26,6 +26,7 @@ import multiprocessing
 APP='binutils-gdb'
 URL = 'git://sourceware.org/git/binutils-gdb.git'
 DEFAULT_VER='2.25.1'
+DEFAULT_INSTALL_PREFIX_DIR='~/opt/cross'
 AN_APP='ld'
 TARGET='arm-eabi'
 TARGET_DASH='-'
@@ -34,7 +35,7 @@ class Installer:
     '''Installer'''
 
     def __init__(self, defaultVer=DEFAULT_VER, defaultCodePrefixDir=None,
-            defaultInstallPrefixDir=None, defaultForceInstall=None):
+            defaultInstallPrefixDir=DEFAULT_INSTALL_PREFIX_DIR, defaultForceInstall=None):
         '''See parseinstallargs for defaults prefixes'''
         self.args = parseinstallargs.InstallArgs(APP, defaultVer, defaultCodePrefixDir,
                 defaultInstallPrefixDir, defaultForceInstall)
