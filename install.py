@@ -41,9 +41,7 @@ if 'all' in args.apps:
     args.apps = all_apps
 
 # Install the apps
-print('install.py: args.apps =', args.apps)
 for app in args.apps:
-    print('install.py: app =', app)
     if app == 'ninja':
         installer = ninja_install.Installer()
         installer.install()
