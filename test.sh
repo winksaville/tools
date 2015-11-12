@@ -110,7 +110,7 @@ DFLT_INSTALL_PATHS=("${DEFAULT_INSTALL_PREFIX_DIR}/bin" "${DEFAULT_INSTALL_PREFI
 ALT_INSTALL_PATHS=("${ALT_INSTALL_PREFIX_DIR}/bin" "${ALT_INSTALL_PREFIX_DIR}/cross/bin")
 
 # Add DFLT's to PATH
-INSTALL_PATHS=${DFLT_INSTALL_PATHS}
+INSTALL_PATHS="${DFLT_INSTALL_PATHS[@]}"
 export PATH=${INSTALL_PATHS}:${ORG_PATH}
 
 if [[ $1 == "quick" ]]; then
@@ -119,7 +119,6 @@ if [[ $1 == "quick" ]]; then
 fi
 
 if [[ $1 == "full" ]]; then
-  echo "test.sh: install.py all"
   ${THIS_DIR}/install.py all
   [[ $? != 0 ]] && echo "Error installing" && exit 1
 

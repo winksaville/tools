@@ -26,7 +26,7 @@ import multiprocessing
 DEFAULT_VER='5.2.0'
 APP='gcc'
 AN_APP='gcc'
-DEFAULT_INSTALL_PREFIX_DIR='~/opt/cross'
+DEFAULT_CROSS_DIR='cross'
 TARGET='arm-eabi'
 TARGET_DASH='-'
 CHECKOUT_LABEL='gcc_{}_release'.format(DEFAULT_VER.replace('.','_'))
@@ -41,10 +41,11 @@ class Installer:
     '''Installer'''
 
     def __init__(self, defaultVer=DEFAULT_VER, defaultCodePrefixDir=None,
-            defaultInstallPrefixDir=DEFAULT_INSTALL_PREFIX_DIR, defaultForceInstall=None):
+            defaultInstallPrefixDir=None, defaultForceInstall=None,
+            defaultCrossDir=DEFAULT_CROSS_DIR):
         '''See parseinstallargs for defaults prefixes'''
         self.args = parseinstallargs.InstallArgs(APP, defaultVer, defaultCodePrefixDir,
-                defaultInstallPrefixDir, defaultForceInstall)
+                defaultInstallPrefixDir, defaultForceInstall, defaultCrossDir)
 
     def install(self):
         dst_dir = os.path.join(self.args.installPrefixDir, 'bin')

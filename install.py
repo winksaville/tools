@@ -29,7 +29,7 @@ import os
 import subprocess
 import argparse
 
-all_apps = ['ninja', 'meson', 'binutils', 'gcc', 'qemu']
+all_apps = ['ninja', 'meson', 'binutils-cross', 'gcc-cross', 'qemu-system-arm']
 
 args = parseinstallargs.InstallArgs('all', apps=all_apps)
 
@@ -48,13 +48,13 @@ for app in args.apps:
     elif app == 'meson':
         installer = meson_install.Installer()
         installer.install()
-    elif app == 'binutils':
+    elif app == 'binutils-cross':
         installer = binutils_install.Installer()
         installer.install()
-    elif app == 'gcc':
+    elif app == 'gcc-cross':
         installer = gcc_install.Installer()
         installer.install()
-    elif app == 'qemu':
+    elif app == 'qemu-system-arm':
         installer = qemu_install.Installer()
         installer.install()
     else:

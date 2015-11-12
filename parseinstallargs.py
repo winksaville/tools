@@ -22,7 +22,8 @@ DEFAULT_INSTALL_PREFIX_DIR = '~/opt'
 
 class InstallArgs(argparse.ArgumentParser):
     def __init__(self, app, defaultVer=None, defaultCodePrefixDir=None,
-            defaultInstallPrefixDir=None, defaultForceInstall=None, apps=None) :
+            defaultInstallPrefixDir=None, defaultForceInstall=None,
+            defaultCrossDir=None, apps=None):
         parser = argparse.ArgumentParser()
 
         self.app = app
@@ -57,6 +58,13 @@ class InstallArgs(argparse.ArgumentParser):
                 nargs='?',
                 default=defaultInstallPrefixDir)
 
+        if defaultCrossDir is None:
+            defaultCrossDir = ''
+        parser.add_argument('--crossDir',
+                help='cross directory (default: {})'.format(defaultCrossDir),
+                nargs='?',
+                default=defaultCrossDir)
+
         if defaultVer is None:
             defaultVer = ''
         parser.add_argument('--ver',
@@ -74,6 +82,8 @@ class InstallArgs(argparse.ArgumentParser):
                 os.path.expanduser(self.codePrefixDir))
         self.installPrefixDir = os.path.abspath(
                 os.path.expanduser(self.installPrefixDir))
+        if (self.crossDir != ''):
+            self.installPrefixDir = os.path.join(self.installPrefixDir, self.crossDir)
 
         # TODO: Why this trickiness, see printHelp below
         self.printHelp = parser.print_help
