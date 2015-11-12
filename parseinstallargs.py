@@ -28,7 +28,9 @@ class InstallArgs(argparse.ArgumentParser):
         self.app = app
         self.appList = apps
 
-        parser.add_argument('apps', default=[], nargs='*', help='Applicatons to install: {}'.format(apps))
+        parser.add_argument('apps', default=[],
+                nargs='*',
+                help='Apps to install, "all" or one or more in the list: {}'.format(apps))
 
         if defaultForceInstall is None:
             defaultForceInstall = False
