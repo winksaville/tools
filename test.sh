@@ -26,12 +26,6 @@ DEFAULT_INSTALL_PREFIX_DIR=$HOME/opt
 ALT_CODE_PREFIX_DIR=$HOME/tmpx
 ALT_INSTALL_PREFIX_DIR=$HOME/optx
 
-# Arrays of paths for installing
-DFLT_INSTALL_PATHS=("${DEFAULT_INSTALL_PREFIX_DIR}/bin" "${DEFAULT_INSTALL_PREFIX_DIR}/cross/bin")
-ALT_INSTALL_PATHS=("${ALT_INSTALL_PREFIX_DIR}/bin" "${ALT_INSTALL_PREFIX_DIR}/cross/bin")
-#echo ${DFLT_INSTALL_PATHS[@]}
-#echo ${ALT_INSTALL_PATHS[@]}
-
 
 test_installed () {
   # Declare in local scope
@@ -72,7 +66,7 @@ test_installed () {
   for install_path in ${INSTALL_PATHS[@]}; do
     [[ "${whichDir}" == *"${install_path}"* ]] && OK=1
   done
-  [[ ${OK} == 0 ]] && echo ${app} not installed in ${DFLT_INSTALL_PATHS[@]} && exit 1
+  [[ ${OK} == 0 ]] && echo ${app} not installed in ${INSTALL_PATHS[@]} && exit 1
 
   # Test if ${app} actual version is the expected version
   actualVer=$(${app} ${params[versionParam]} 2>&1)
@@ -94,9 +88,11 @@ test_all () {
 }
 
 help () {
-  echo "Usage: $0 <full> | <quick>"
+  echo "Usage: $0 <full> | <quick> [install_prefix_dir]"
   echo "  full: does several installs and tests the results"
   echo "  quick: assumes previously installed and runs tests"
+  echo "  install_prefix_dir: Optional paths to look for installed"
+  echo "                      files. (default: ~/opt)"
   exit 0
 }
 
@@ -105,6 +101,13 @@ if [[ $# == 0 ]]; then
   help
 fi
 
+if [[ "$2" != "" ]]; then
+  # User has supplied a default install prefix dir
+  DEFAULT_INSTALL_PREFIX_DIR=$2
+fi
+
+DFLT_INSTALL_PATHS=("${DEFAULT_INSTALL_PREFIX_DIR}/bin" "${DEFAULT_INSTALL_PREFIX_DIR}/cross/bin")
+ALT_INSTALL_PATHS=("${ALT_INSTALL_PREFIX_DIR}/bin" "${ALT_INSTALL_PREFIX_DIR}/cross/bin")
 
 # Add DFLT's to PATH
 INSTALL_PATHS=${DFLT_INSTALL_PATHS}
@@ -131,7 +134,7 @@ if [[ $1 == "full" ]]; then
   ${THIS_DIR}/install.py ninja meson --forceInstall
   [[ $? != 0 ]] && echo "Error forceInstall" && exit 1
 
-  # Test all again still using the DFLT_INSTALL_PATHS
+  # Test all again still using the INSTALL_PATHS
   echo "test.sh: test_all after install ninja meson"
   test_all
 
