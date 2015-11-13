@@ -25,7 +25,9 @@ import shutil
 
 APP='meson'
 URL='https://github.com/mesonbuild/meson.git'
-DEFAULT_VER='0.26.0'
+DEFAULT_VER='0.27.0'
+#CHECKOUT=DEFAULT_VER
+CHECKOUT='master'
 
 class Installer:
     '''Installer for meson.'''
@@ -63,7 +65,7 @@ class Installer:
 
             utils.git('clone', [URL, code_dir])
             os.chdir(code_dir)
-            utils.git('checkout', [self.args.ver])
+            utils.git('checkout', [CHECKOUT])
 
             # Not a list but a string
             subprocess.check_call('./install_meson.py --prefix {}'
