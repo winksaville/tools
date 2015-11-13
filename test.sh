@@ -26,41 +26,37 @@ DEFAULT_INSTALL_PREFIX_DIR=$HOME/opt
 ALT_CODE_PREFIX_DIR=$HOME/tmpx
 ALT_INSTALL_PREFIX_DIR=$HOME/optx
 
+# Default install paths, we expect the executables
+# to be installed in these paths
+DFLT_INSTALL_PATHS=("${DEFAULT_INSTALL_PREFIX_DIR}/bin" "${DEFAULT_INSTALL_PREFIX_DIR}/cross/bin")
+ALT_INSTALL_PATHS=("${ALT_INSTALL_PREFIX_DIR}/bin" "${ALT_INSTALL_PREFIX_DIR}/cross/bin")
 
-test_installed () {
-  # Declare in local scope
-  declare -A params
-
-  app=$1
-  params[getVersion]="${THIS_DIR}/$1_install.py"
-  params[versionParam]="--version"
-
-  for param in "$@"; do
-    #echo param=$param
-
-    # param should be "name=value" split at the '='
-    # and store in nameValueArray
-    IFS="=" read -a nameValueArray <<< "$param"
-    #echo nameValueArray[0]=${nameValueArray[0]}
-    #echo nameValueArray[1]=${nameValueArray[1]}
-
-    # Store the name and value into the params dictionary
-    params[${nameValueArray[0]}]=${nameValueArray[1]}
-    #echo params keys="${!params[@]}"
-    #echo params values="${params[@]}"
+add_install_paths_to_org_path () {
+  declare -a ary1=("${!1}")
+  export INSTALL_PATHS="${ary1[@]}"
+  for install_path in "${ary1[@]}"; do
+    export PATH=${install_path}:${PATH}
   done
+}
 
-  # Capture all of which's output so as to not spew console
+# First parameter is the name of the app
+#
+# Second parameter is the is passed to the app to get its version
+#
+# Third parameter is the is code to get the expected version
+test_installed () {
+  app=$1
+  versionParam=$2
+  getExpectedVer=$3
+
+  # Check if ${app} installed at all, capturing all of
+  # which's output so as to not spew console
   whichOutput=$(which ${app} 2>&1)
   whichExitCode=$?
-  #echo whichExitCode=$whichExitCode
-  #echo whichOutput=$whichOutput
-  #echo PATH=$PATH
-
-  # Check if ${app{ installed at all
   [[ ${whichExitCode} != 0 ]] && echo ${app} not installed && exit 1
 
-  # It was but is it in the expected directories
+  # It is but is it in the expected directories ${INSTALL_PATHS} which
+  # is a bash associative array and in the loop below we check it.
   whichDir=$(dirname ${whichOutput})
   OK=0
   for install_path in ${INSTALL_PATHS[@]}; do
@@ -68,23 +64,27 @@ test_installed () {
   done
   [[ ${OK} == 0 ]] && echo ${app} not installed in ${INSTALL_PATHS[@]} && exit 1
 
-  # Test if ${app} actual version is the expected version
-  actualVer=$(${app} ${params[versionParam]} 2>&1)
-  expectedVer=$(${params[getVersion]} printVer 2>&1)
-  [[ ${actualVer} != *"${expectedVer}"* ]] && \
-    echo ${app} is ${actualVer} expected ${expectedVer} && exit 1
+  # Now get the expected version
+  expectedVer=$(${getExpectedVer} 2>&1)
 
-  echo ${app} OK
+  # Next get the actual version
+  actualVer=$(${app} ${versionParam} 2>&1)
+
+  # Finally verify the expectedVer is contained in the actualVer output
+  [[ ${actualVer} != *"${expectedVer}"* ]] && \
+    printf "$1 BAD version reported:\n-----\n${actualVer}\n-----\nBut expected ${expectedVer}\n" && exit 1
+
+  echo $1 OK
 }
 
-test_all () {
-  test_installed ninja
-  test_installed meson versionParam=-v
-  test_installed arm-eabi-ld getVersion=${THIS_DIR}/binutils_install.py
-  test_installed qemu-system-arm getVersion=${THIS_DIR}/qemu_install.py
 
-  #TODO: gcc is not the same version as binutils, need a fix
-  #test_installed arm-eabi-gcc getVersion=${THIS_DIR}/binutils_install.py
+test_all () {
+  test_installed ninja "--version" "${THIS_DIR}/ninja_install.py printVer"
+  test_installed meson "-v" "${THIS_DIR}/meson_install.py printVer"
+  test_installed arm-eabi-ld "--version" "${THIS_DIR}/binutils_install.py printVer"
+  test_installed arm-eabi-gdb "--version" "${THIS_DIR}/binutils_install.py printGdbVer"
+  test_installed qemu-system-arm "--version" "${THIS_DIR}/qemu_install.py printVer"
+  test_installed arm-eabi-gcc "--version" "${THIS_DIR}/gcc_install.py printVer"
 }
 
 help () {
@@ -106,24 +106,27 @@ if [[ "$2" != "" ]]; then
   DEFAULT_INSTALL_PREFIX_DIR=$2
 fi
 
-DFLT_INSTALL_PATHS=("${DEFAULT_INSTALL_PREFIX_DIR}/bin" "${DEFAULT_INSTALL_PREFIX_DIR}/cross/bin")
-ALT_INSTALL_PATHS=("${ALT_INSTALL_PREFIX_DIR}/bin" "${ALT_INSTALL_PREFIX_DIR}/cross/bin")
-
-# Add DFLT's to PATH
-INSTALL_PATHS="${DFLT_INSTALL_PATHS[@]}"
-export PATH=${INSTALL_PATHS}:${ORG_PATH}
+# Add DFLT_INSTALL_PATHS to the orginal path
+add_install_paths_to_org_path DFLT_INSTALL_PATHS[@]
 
 if [[ $1 == "quick" ]]; then
   test_all
   exit 0
 fi
 
+if [[ $1 == "alt" ]]; then
+  add_install_paths_to_org_path ALT_INSTALL_PATHS[@]
+  test_all
+  exit 0
+fi
+
 if [[ $1 == "full" ]]; then
+  echo "test.sh: install all"
   ${THIS_DIR}/install.py all
   [[ $? != 0 ]] && echo "Error installing" && exit 1
 
   # Test that everything was installed
-  echo "test.sh: test_all"
+  echo "test.sh: test_all full"
   test_all
 
   # Test individual building and forced installation.
@@ -133,7 +136,7 @@ if [[ $1 == "full" ]]; then
   ${THIS_DIR}/install.py ninja meson --forceInstall
   [[ $? != 0 ]] && echo "Error forceInstall" && exit 1
 
-  # Test all again still using the INSTALL_PATHS
+  # Test all again still using the DFLT_INSTALL_PATHS
   echo "test.sh: test_all after install ninja meson"
   test_all
 
@@ -145,9 +148,7 @@ if [[ $1 == "full" ]]; then
   [[ $? != 0 ]] && echo "Error alternate install" && exit 1
 
   # Test all on the ALT paths
-  echo "test.sh: test_all ALT location"
-  INSTALL_PATHS=${ALT_INSTALL_PATHS}
-  export PATH=${INSTALL_PATHS}:${ORG_PATH}
+  add_install_paths_to_org_path ALT_INSTALL_PATHS[@]
   test_all
 else
   help
