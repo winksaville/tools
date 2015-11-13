@@ -26,6 +26,7 @@ import multiprocessing
 APP='binutils-gdb'
 URL = 'git://sourceware.org/git/binutils-gdb.git'
 DEFAULT_VER='2.25.1'
+GDB_VER='7.8.50'
 DEFAULT_CROSS_DIR='cross'
 AN_APP='ld'
 TARGET='arm-eabi'
@@ -87,8 +88,13 @@ class Installer:
 
 if __name__ == '__main__':
 
-    if len(sys.argv) == 2 and sys.argv[1] == 'printVer':
-        print(DEFAULT_VER)
+    if len(sys.argv) == 2:
+        if sys.argv[1] == 'printVer':
+            print(DEFAULT_VER)
+        elif sys.argv[1] == 'printGdbVer':
+            print(GDB_VER)
+        else:
+            print("Unknown")
     else:
         installer = Installer()
         installer.install()
