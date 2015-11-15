@@ -38,7 +38,7 @@ def wget_extract(url, tmp_dir='.', dst_path='.', timeout=20):
     wgetdst_path = os.path.join(tmp_dir, wgetdst_filename)
     if os.path.exists(wgetdst_path):
         os.remove(wgetdst_path)
-    print('wget: get timeout={} url={} wgetdst_path={} timeout='.format(timeout, url, wgetdst_path))
+    print('wget: get timeout={} url={} wgetdst_path={}'.format(timeout, url, wgetdst_path))
     p = subprocess.Popen('wget --timeout={} -qO- {} > {}'.format(timeout, url, wgetdst_path), shell=True)
     os.waitpid(p.pid, 0)
     os.makedirs(dst_path, exist_ok=False)

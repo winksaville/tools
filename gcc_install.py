@@ -22,13 +22,13 @@ import sys
 import os
 import shutil
 import multiprocessing
+import traceback
 
 DEFAULT_VER='5.2.0'
 APP='gcc'
 AN_APP='gcc'
 DEFAULT_CROSS_DIR='cross'
 TARGET='arm-eabi'
-TARGET_DASH='-'
 CHECKOUT_LABEL='gcc_{}_release'.format(DEFAULT_VER.replace('.','_'))
 GCC_GIT_REPO_URL = 'https://github.com/gcc-mirror/gcc.git'
 #GCC_GIT_REPO_URL = 'https://github.com/winksaville/gcc-5.2.0.git' # My debug version
@@ -42,10 +42,11 @@ class Installer:
 
     def __init__(self, defaultVer=DEFAULT_VER, defaultCodePrefixDir=None,
             defaultInstallPrefixDir=None, defaultForceInstall=None,
-            defaultCrossDir=DEFAULT_CROSS_DIR):
+            defaultCrossDir=DEFAULT_CROSS_DIR, defaultTarget=None):
         '''See parseinstallargs for defaults prefixes'''
         self.args = parseinstallargs.InstallArgs(APP, defaultVer, defaultCodePrefixDir,
-                defaultInstallPrefixDir, defaultForceInstall, defaultCrossDir)
+                defaultInstallPrefixDir, defaultForceInstall, defaultCrossDir, defaultTarget)
+
 
     def install(self):
         dst_dir = os.path.join(self.args.installPrefixDir, 'bin')
@@ -53,9 +54,12 @@ class Installer:
         retval = 0
 
         try:
-            dst = os.path.join(dst_dir, '{target}{target_dash}{an_app}'
-                    .format(target=TARGET, target_dash=TARGET_DASH, an_app=AN_APP))
-            output = subprocess.check_output([dst, '--version'],
+            theApp = AN_APP
+            if self.args.target != '':
+                theApp = '{}-{}'.format(self.args.target, theApp)
+
+            theApp = os.path.join(dst_dir, theApp)
+            output = subprocess.check_output([theApp, '--version'],
                     stderr=subprocess.STDOUT)
             if output is None:
                 output = b''
@@ -66,13 +70,16 @@ class Installer:
             print('{app} {ver} is already installed'
                     .format(app=self.args.app, ver=self.args.ver))
         else:
-            gmp_path = os.path.join(self.args.codePrefixDir, 'gmp')
+            code_dir = self.args.codePrefixDir
+            if self.args.target != '':
+                code_dir = os.path.join(code_dir, self.args.target)
+            gmp_path = os.path.join(code_dir, 'gmp')
             print('gcc_install: gmp_path=', gmp_path)
-            mpfr_path = os.path.join(self.args.codePrefixDir, 'mpfr')
+            mpfr_path = os.path.join(code_dir, 'mpfr')
             print('gcc_install: mpfr_path=', mpfr_path)
-            mpc_path = os.path.join(self.args.codePrefixDir, 'mpc')
+            mpc_path = os.path.join(code_dir, 'mpc')
             print('gcc_install: mpc_path=', mpc_path)
-            gcc_path = os.path.join(self.args.codePrefixDir, 'gcc')
+            gcc_path = os.path.join(code_dir, 'gcc')
             print('gcc_install: gcc_path=', gcc_path)
 
             if self.args.forceInstall:
@@ -102,8 +109,7 @@ class Installer:
             # ls the directory with gcc, gmp, mpfr and mpc for debug purposes
             #utils.bash('ls -al {}'.format(os.path.dirname(self.args.codePrefixDir)))
 
-            print('gcc_install: configure')
-            subprocess.run(('../configure --prefix={0} --target={1}' +
+            configureCmd = ('../configure --prefix={0}' +
                    ' --with-gmp={gmp}' +
                    ' --with-gmp-include={gmp}' +
                    ' --with-mpfr={mpfr}' +
@@ -112,21 +118,20 @@ class Installer:
                    ' --with-mpc-include={mpc}/src' +
                    ' --disable-nls ' +
                    ' --enable-languages=c,c++' +
-                   ' --without-headers')
-                    .format(self.args.installPrefixDir, TARGET, gmp=gmp_path, mpfr=mpfr_path, mpc=mpc_path),
-                   shell=True)
-            print('gcc_install: make all-gcc')
+                   ' --disable-multilib' +
+                   ' --without-headers').format(
+                           self.args.installPrefixDir, gmp=gmp_path, mpfr=mpfr_path, mpc=mpc_path)
+            if self.args.target != '':
+                configureCmd += ' --target={}'.format(self.args.target)
+
+            subprocess.run(configureCmd, shell=True)
             subprocess.run('make all-gcc -j {}'.format(multiprocessing.cpu_count()),
                     shell=True,
                     stdout=subprocess.DEVNULL) # Too much logging overflows 4MB travis-ci log limit
-            print('gcc_install: make install-gcc')
             subprocess.run('make install-gcc', shell=True)
-            print('gcc_install: make all-target-libgcc')
             subprocess.run('make all-target-libgcc -j {}'.format(multiprocessing.cpu_count()),
                     shell=True,
                     stdout=subprocess.DEVNULL) # Too much logging overflows 4MB travis-ci log limit
-            print('gcc_install: make install-target-libgcc')
-            #utils.bash('make install-target-libgcc')
             subprocess.run('make install-target-libgcc', shell=True)
 
         return 0

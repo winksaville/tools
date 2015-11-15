@@ -29,7 +29,7 @@ import os
 import subprocess
 import argparse
 
-all_apps = ['ninja', 'meson', 'binutils-cross', 'gcc-cross', 'qemu-system-arm']
+all_apps = ['ninja', 'meson', 'binutils-arm-eabi', 'binutils-x86_64', 'gcc-arm-eabi', 'gcc-x86_64', 'qemu-system-arm']
 
 args = parseinstallargs.InstallArgs('all', apps=all_apps)
 
@@ -42,17 +42,24 @@ if 'all' in args.apps:
 
 # Install the apps
 for app in args.apps:
+    print('install.py app =', app)
     if app == 'ninja':
         installer = ninja_install.Installer()
         installer.install()
     elif app == 'meson':
         installer = meson_install.Installer()
         installer.install()
-    elif app == 'binutils-cross':
-        installer = binutils_install.Installer()
+    elif app == 'binutils-arm-eabi':
+        installer = binutils_install.Installer(defaultTarget='arm-eabi')
         installer.install()
-    elif app == 'gcc-cross':
-        installer = gcc_install.Installer()
+    elif app == 'binutils-x86_64':
+        installer = binutils_install.Installer(defaultTarget='x86_64-pc-linux')
+        installer.install()
+    elif app == 'gcc-arm-eabi':
+        installer = gcc_install.Installer(defaultTarget='arm-eabi')
+        installer.install()
+    elif app == 'gcc-x86_64':
+        installer = gcc_install.Installer(defaultTarget='x86_64-pc-linux')
         installer.install()
     elif app == 'qemu-system-arm':
         installer = qemu_install.Installer()

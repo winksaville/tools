@@ -22,13 +22,14 @@ import sys
 import os
 import shutil
 import multiprocessing
+import traceback
 
-APP='binutils-gdb'
-URL = 'git://sourceware.org/git/binutils-gdb.git'
 DEFAULT_VER='2.25.1'
+APP='binutils-gdb'
+AN_APP='ld'
+URL = 'git://sourceware.org/git/binutils-gdb.git'
 GDB_VER='7.8.50'
 DEFAULT_CROSS_DIR='cross'
-AN_APP='ld'
 TARGET='arm-eabi'
 TARGET_DASH='-'
 
@@ -37,10 +38,10 @@ class Installer:
 
     def __init__(self, defaultVer=DEFAULT_VER, defaultCodePrefixDir=None,
             defaultInstallPrefixDir=None, defaultForceInstall=None,
-            defaultCrossDir=DEFAULT_CROSS_DIR):
+            defaultCrossDir=DEFAULT_CROSS_DIR, defaultTarget=None):
         '''See parseinstallargs for defaults prefixes'''
         self.args = parseinstallargs.InstallArgs(APP, defaultVer, defaultCodePrefixDir,
-                defaultInstallPrefixDir, defaultForceInstall, defaultCrossDir)
+                defaultInstallPrefixDir, defaultForceInstall, defaultCrossDir, defaultTarget)
 
     def install(self):
         dst_dir = os.path.join(self.args.installPrefixDir, 'bin')
@@ -48,9 +49,12 @@ class Installer:
         retval = 0
 
         try:
-            dst = os.path.join(dst_dir, '{target}{target_dash}{an_app}'
-                    .format(target=TARGET, target_dash=TARGET_DASH, an_app=AN_APP))
-            output = subprocess.check_output([dst, '--version'],
+            theApp = AN_APP
+            if self.args.target != '':
+                theApp = '{}-{}'.format(self.args.target, theApp)
+
+            theApp = os.path.join(dst_dir, theApp)
+            output = subprocess.check_output([theApp, '--version'],
                     stderr=subprocess.STDOUT)
             if output is None:
                 output = b''
@@ -63,7 +67,10 @@ class Installer:
         else:
             print('compiling {app} {ver}'
                     .format(app=self.args.app, ver=self.args.ver))
-            code_dir = os.path.join(self.args.codePrefixDir, self.args.app)
+            code_dir = self.args.codePrefixDir
+            if self.args.target != '':
+                code_dir = os.path.join(code_dir, self.args.target)
+            code_dir = os.path.join(code_dir, self.args.app)
             if self.args.forceInstall:
                 shutil.rmtree(code_dir, ignore_errors=True)
             os.makedirs(code_dir)
@@ -75,8 +82,11 @@ class Installer:
             os.mkdir('build')
             os.chdir('build')
 
-            subprocess.run('../configure --prefix={0} --target={1} --disable-nls'
-                    .format(self.args.installPrefixDir, TARGET),
+            configureCmd = '../configure --prefix={} --disable-nls'.format(
+                    self.args.installPrefixDir)
+            if self.args.target != '':
+                configureCmd += ' --target={}'.format(self.args.target)
+            subprocess.run(configureCmd,
                     shell=True,
                     stdout=subprocess.DEVNULL) # Too much logging overflows 4MB travis-ci log limit
             subprocess.run('make all -j {}'.format(multiprocessing.cpu_count()),
