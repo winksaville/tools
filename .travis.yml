@@ -48,4 +48,7 @@ before_install:
   - virtualenv --version
 
 script:
-  - ./test.sh full
+  # Done do full as we run out of disk space on travis
+  - ./test.sh install_all
+  - ./test.sh force_install
+  #- ./test.sh alt_install
