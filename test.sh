@@ -90,10 +90,59 @@ test_all () {
   test_installed qemu-system-arm "--version" "${THIS_DIR}/qemu_install.py printVer"
 }
 
+
+install_all () {
+  echo "test.sh: install all"
+  ${THIS_DIR}/install.py all
+  [[ $? != 0 ]] && echo "Error installing" && exit 1
+
+  # Test that everything was installed
+  echo "test.sh: test_all full"
+  test_all
+}
+
+force_install () {
+  # Test individual building and forced installation.
+  # This is only a subset as it's already taking about
+  # 30 minutes.
+  echo "test.sh: install ninja meson --forceInstall"
+  ${THIS_DIR}/install.py ninja meson --forceInstall
+  [[ $? != 0 ]] && echo "Error forceInstall" && exit 1
+
+  # Test ninja and meson again
+  test_installed ninja "--version" "${THIS_DIR}/ninja_install.py printVer"
+  test_installed meson "-v" "${THIS_DIR}/meson_install.py printVer"
+}
+
+alt_install() {
+  # Test we can install on the ALT prefixes without forceInstall
+  echo "test.sh: install to ALT location without forceInstall"
+  rm -rf ${ALT_CODE_PREFIX_DIR}
+  rm -rf ${ALT_INSTALL_PREFIX_DIR}
+  ${THIS_DIR}/install.py all --codePrefixDir ${ALT_CODE_PREFIX_DIR} --installPrefixDir ${ALT_INSTALL_PREFIX_DIR}
+  [[ $? != 0 ]] && echo "Error alternate install" && exit 1
+
+  # Test all on the ALT paths
+  add_install_paths_to_org_path ALT_INSTALL_PATHS[@]
+  test_all
+}
+
+full_install() {
+  install_all
+  force_install
+  alt_install
+}
+
 help () {
   echo "Usage: $0 <full> | <quick> [install_prefix_dir]"
-  echo "  full: does several installs and tests the results"
   echo "  quick: assumes previously installed and runs tests"
+  echo "  install_all: install all"
+  echo "  force_install: force install ninja and meson"
+  echo "  alt_install: reinstall all at an alternate code"
+  echo "               and install prefix directories"
+  echo "  full: install_all, force_install and alt_install"
+  echo ""
+  echo "Optional parameters"
   echo "  install_prefix_dir: Optional paths to look for installed"
   echo "                      files. (default: ~/opt)"
   exit 0
@@ -112,47 +161,23 @@ fi
 # Add DFLT_INSTALL_PATHS to the orginal path
 add_install_paths_to_org_path DFLT_INSTALL_PATHS[@]
 
-if [[ $1 == "quick" ]]; then
+case $1 in
+"quick")
   test_all
-  exit 0
-fi
-
-if [[ $1 == "alt" ]]; then
-  add_install_paths_to_org_path ALT_INSTALL_PATHS[@]
-  test_all
-  exit 0
-fi
-
-if [[ $1 == "full" ]]; then
-  echo "test.sh: install all"
-  ${THIS_DIR}/install.py all
-  [[ $? != 0 ]] && echo "Error installing" && exit 1
-
-  # Test that everything was installed
-  echo "test.sh: test_all full"
-  test_all
-
-  # Test individual building and forced installation.
-  # This is only a subset as it's already taking about
-  # 30 minutes.
-  echo "test.sh: install ninja meson --forceInstall"
-  ${THIS_DIR}/install.py ninja meson --forceInstall
-  [[ $? != 0 ]] && echo "Error forceInstall" && exit 1
-
-  # Test all again still using the DFLT_INSTALL_PATHS
-  echo "test.sh: test_all after install ninja meson"
-  test_all
-
-  # Test we can install on the ALT prefixes without forceInstall
-  echo "test.sh: install to ALT location without forceInstall"
-  rm -rf ${ALT_CODE_PREFIX_DIR}
-  rm -rf ${ALT_INSTALL_PREFIX_DIR}
-  ${THIS_DIR}/install.py all --codePrefixDir ${ALT_CODE_PREFIX_DIR} --installPrefixDir ${ALT_INSTALL_PREFIX_DIR}
-  [[ $? != 0 ]] && echo "Error alternate install" && exit 1
-
-  # Test all on the ALT paths
-  add_install_paths_to_org_path ALT_INSTALL_PATHS[@]
-  test_all
-else
+  ;;
+"install_all")
+  install_all
+  ;;
+"force_install")
+  force_install
+  ;;
+"alt_install")
+  alt_install
+  ;;
+"full")
+  full_install
+  ;;
+*)
   help
-fi
+  ;;
+esac
