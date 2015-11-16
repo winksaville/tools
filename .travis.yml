@@ -29,7 +29,7 @@ addons:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - gcc5 # Needed for Posix Platform
+      - gcc-5 # Needed for Posix Platform
       - texinfo # needed by binutils-gdb
       - libgmp-dev # needed by gcc
       - libmpfr-dev # needed by gcc
