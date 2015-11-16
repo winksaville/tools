@@ -26,8 +26,8 @@ python:
 
 addons:
   apt:
-    sources:
-      - ubuntu-toolchain-r-test
+    #sources:
+    #  - ubuntu-toolchain-r-test
     packages:
       - gcc-5 # Needed for Posix Platform
       - texinfo # needed by binutils-gdb
