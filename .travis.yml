@@ -26,7 +26,10 @@ python:
 
 addons:
   apt:
+    sources:
+      - ubuntu-toolchain-r-test
     packages:
+      - gcc5 # Needed for Posix Platform
       - texinfo # needed by binutils-gdb
       - libgmp-dev # needed by gcc
       - libmpfr-dev # needed by gcc
@@ -49,6 +52,6 @@ before_install:
 
 script:
   # Done do full as we run out of disk space on travis
-  - ./test.sh install_all
+  #- ./test.sh install_all
   - ./test.sh force_install
   #- ./test.sh alt_install
