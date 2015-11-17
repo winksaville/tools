@@ -84,7 +84,8 @@ class InstallArgs(argparse.ArgumentParser):
         # TODO: We must do this so parser "arguments"
         # (apps, forceInstall, codePrefixDir ...)
         # are available here and by instances of InstallArgs.
-        parser.parse_args(namespace=self)
+        self.knownArgs, self.unknownArgs = parser.parse_known_args(namespace=self)
+        #print('unknownArgs =', self.unknownArgs)
 
         # Be sure the prefix directory paths are expanded and absolute
         self.codePrefixDir = os.path.abspath(

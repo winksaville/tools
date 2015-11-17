@@ -29,7 +29,7 @@ import os
 import subprocess
 import argparse
 
-all_apps = ['ninja', 'meson', 'binutils-arm-eabi', 'binutils-x86_64', 'gcc-arm-eabi', 'gcc-x86_64', 'qemu-system-arm']
+all_apps = ['ninja', 'meson', 'binutils-arm-eabi', 'binutils-x86_64', 'gcc-arm-eabi', 'qemu-system-arm']
 
 args = parseinstallargs.InstallArgs('all', apps=all_apps)
 
@@ -59,7 +59,28 @@ for app in args.apps:
         installer = gcc_install.Installer(defaultTarget='arm-eabi')
         installer.install()
     elif app == 'gcc-x86_64':
-        installer = gcc_install.Installer(defaultTarget='x86_64-pc-linux')
+        print('gcc-x86_64 ******* NOT YET WORKING ********')
+        installer = gcc_install.Installer(defaultTarget='x86_64-pc-linux',
+                extraFlags=[
+                    '--enable-threads=posix',
+                    '--enable-libmpx',
+                    '--enable-__cxa_atexit',
+                    '--disable-libunwind-exceptions',
+                    '--enable-clocale=gnu',
+                    '--disable-libstdcxx-pch',
+                    '--disable-libssp',
+                    '--enable-gnu-unique-object',
+                    '--enable-linker-build-id',
+                    '--enable-lto',
+                    '--enable-plugin',
+                    '--enable-install-libiberty',
+                    '--with-linker-hash-style=gnu',
+                    '--enable-gnu-indirect-function',
+                    '--disable-multilib',
+                    '--disable-werror',
+                    '--enable-checking=release',
+                    '--with-default-libstdcxx-abi=gcc4-compatible',
+                ])
         installer.install()
     elif app == 'qemu-system-arm':
         installer = qemu_install.Installer()
