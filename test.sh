@@ -84,9 +84,9 @@ test_all () {
   test_installed arm-eabi-ld "--version" "${THIS_DIR}/binutils_install.py printVer"
   test_installed arm-eabi-gdb "--version" "${THIS_DIR}/binutils_install.py printGdbVer"
   test_installed arm-eabi-gcc "--version" "${THIS_DIR}/gcc_install.py printVer"
-  test_installed x86_64-pc-linux-ld "--version" "${THIS_DIR}/binutils_install.py printVer"
-  test_installed x86_64-pc-linux-gdb "--version" "${THIS_DIR}/binutils_install.py printGdbVer"
-  test_installed x86_64-pc-linux-gcc "--version" "${THIS_DIR}/gcc_install.py printVer"
+  #test_installed x86_64-pc-linux-ld "--version" "${THIS_DIR}/binutils_install.py printVer"
+  #test_installed x86_64-pc-linux-gdb "--version" "${THIS_DIR}/binutils_install.py printGdbVer"
+  #test_installed x86_64-pc-linux-gcc "--version" "${THIS_DIR}/gcc_install.py printVer"
   test_installed qemu-system-arm "--version" "${THIS_DIR}/qemu_install.py printVer"
 }
 
