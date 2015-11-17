@@ -134,7 +134,10 @@ full_install() {
 }
 
 help () {
-  echo "Usage: $0 <full> | <quick> [install_prefix_dir]"
+  echo "Usage: $0 <parameters> [install_prefix_dir]"
+  echo "Parameters:"
+  echo "  app: ninja | meson | arm-eabi-ld | arm-eabi-gdb"
+  echo "       arm-eabi-gcc | qemu-system-arm"
   echo "  quick: assumes previously installed and runs tests"
   echo "  install_all: install all"
   echo "  force_install: force install ninja and meson"
@@ -177,6 +180,33 @@ case $1 in
 "full")
   full_install
   ;;
+"ninja")
+  test_installed ninja "--version" "${THIS_DIR}/ninja_install.py printVer"
+  ;;
+"meson")
+  test_installed meson "-v" "${THIS_DIR}/meson_install.py printVer"
+  ;;
+"arm-eabi-ld")
+  test_installed arm-eabi-ld "--version" "${THIS_DIR}/binutils_install.py printVer"
+  ;;
+"arm-eabi-gdb")
+  test_installed arm-eabi-gdb "--version" "${THIS_DIR}/binutils_install.py printGdbVer"
+  ;;
+"arm-eabi-gcc")
+  test_installed arm-eabi-gcc "--version" "${THIS_DIR}/gcc_install.py printVer"
+  ;;
+"qemu-system-arm")
+  test_installed qemu-system-arm "--version" "${THIS_DIR}/qemu_install.py printVer"
+  ;;
+#"x86_64-pc-linux-ld")
+#   test_installed x86_64-pc-linux-ld "--version" "${THIS_DIR}/binutils_install.py printVer"
+#   ;;
+#"x86_64-pc-linux-ld")
+#   test_installed x86_64-pc-linux-gdb "--version" "${THIS_DIR}/binutils_install.py printGdbVer"
+#   ;;
+#"x86_64-pc-linux-ld")
+#   test_installed x86_64-pc-linux-gcc "--version" "${THIS_DIR}/gcc_install.py printVer"
+#   ;;
 *)
   help
   ;;
