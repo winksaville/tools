@@ -44,14 +44,22 @@ class Installer:
         retval = 0
 
         try:
+            print('dst_dir =', dst_dir)
             dst = os.path.join(dst_dir, self.args.app)
+            print('dst =', dst)
             output = subprocess.check_output([dst, '-v'],
                     stderr=subprocess.STDOUT)
+            print('output =', output)
             if output is None:
+                print('output is None')
                 output = b''
         except BaseException as err:
+            traceback.print_exc()
             output = b''
 
+        print('forceInstall =', self.args.forceInstall)
+        print('self.args.ver =', self.args.ver)
+        print('output =', output)
         if not self.args.forceInstall and bytes(self.args.ver, 'utf-8') in output:
             print('{app} {ver} is already installed'
                     .format(app=self.args.app, ver=self.args.ver))
