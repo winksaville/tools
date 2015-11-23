@@ -195,7 +195,7 @@ class Installer:
 
             cpu_count = 2 # multiprocessing.cpu_count()
             self.runCmd('{env} make all-gcc -j {cpu}'
-                    .format(env=envVars, cpu=cpu_count))
+                    .format(env=envVars, cpu=cpu_count), verbose=True)
 
             self.runCmd('{env} make install-gcc'
                     .format(env=envVars, cpu=cpu_count))
