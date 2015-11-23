@@ -58,7 +58,18 @@ def bash(cmd, stdout=None, stderr=None):
             check=True)
 
 def bashPython2(cmd, stdout=None, stderr=None):
-    bash('[ ! -d venv2 ] && virtualenv --python=python2 venv2 ; ' +
-         'source venv2/bin/activate ; ' +
-         cmd, stdout, stderr)
-
+    bash(('which pyenv >/dev/null; if [ "$?" = "0" ]; then ' +
+          '  echo "*** USING pyenv ***"; ' +
+          '  python --version; ' +
+          '  pyenv version; ' +
+          '  pyenv versions; ' +
+          '  pyenv local 2.7.9; ' +
+          '  python --version; ' +
+          '  pyenv version; ' +
+          '  pyenv versions; ' +
+          'else ' +
+          '  echo "*** USING virtualenv ***"; ' +
+          '  [ ! -d venv2 ] && virtualenv --python=python2 venv2; ' +
+          '  source venv2/bin/activate; ' +
+          'fi; {c}').format(c=cmd),
+         stdout, stderr)
