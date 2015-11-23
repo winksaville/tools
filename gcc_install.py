@@ -66,7 +66,7 @@ class Installer:
     def runCmd(self, cmd, shell=True, verbose=False):
         print('gcc_install.py: cwd={} cmd={}'.format(os.getcwd(), cmd))
         if verbose:
-            output=subprocess.STDOUT
+            output=None
         else:
             output=subprocess.DEVNULL
         subprocess.run(cmd, shell=shell, stdout=output)
