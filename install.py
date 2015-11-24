@@ -29,7 +29,7 @@ import os
 import subprocess
 import argparse
 
-all_apps = ['ninja', 'meson', 'binutils-arm-eabi', 'binutils-x86_64', 'gcc-arm-eabi', 'qemu-system-arm']
+all_apps = ['ninja', 'meson', 'binutils-arm-eabi', 'gcc-arm-eabi', 'qemu-system-arm']
 
 args = parseinstallargs.InstallArgs('all', apps=all_apps)
 
@@ -42,7 +42,6 @@ if 'all' in args.apps:
 
 # Install the apps
 for app in args.apps:
-    print('install.py app =', app)
     if app == 'ninja':
         installer = ninja_install.Installer()
         installer.install()

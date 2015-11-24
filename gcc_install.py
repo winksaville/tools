@@ -66,7 +66,7 @@ class Installer:
     def runCmd(self, cmd, shell=True, verbose=False):
         print('gcc_install.py: cwd={} cmd={}'.format(os.getcwd(), cmd))
         if verbose:
-            output=subprocess.STDOUT
+            output=None
         else:
             output=subprocess.DEVNULL
         subprocess.run(cmd, shell=shell, stdout=output)
@@ -149,11 +149,13 @@ class Installer:
                     os.chdir(gcc_path)
                     utils.git('checkout', [CHECKOUT_LABEL])
 
-            # Make the prerequisites
+            # Make the prerequisites (isl is optional)
             #self.makePrerequisiteLibrary(envVars, isl_path, os.path.dirname(self.args.installPrefixDir))
-            self.makePrerequisiteLibrary(envVars, gmp_path, os.path.dirname(self.args.installPrefixDir))
-            self.makePrerequisiteLibrary(envVars, mpfr_path, os.path.dirname(self.args.installPrefixDir))
-            self.makePrerequisiteLibrary(envVars, mpc_path, os.path.dirname(self.args.installPrefixDir))
+
+            # Make the prerequisites (Not needed if I install existing versions??)
+            #self.makePrerequisiteLibrary(envVars, gmp_path, os.path.dirname(self.args.installPrefixDir))
+            #self.makePrerequisiteLibrary(envVars, mpfr_path, os.path.dirname(self.args.installPrefixDir))
+            #self.makePrerequisiteLibrary(envVars, mpc_path, os.path.dirname(self.args.installPrefixDir))
 
             # Create the build directory and cd into it
             os.chdir(gcc_path)
@@ -191,14 +193,19 @@ class Installer:
                 cmd += ' {}'.format(extraFlag)
             self.runCmd(cmd)
 
-            self.runCmd('{env} make all-gcc -j {cpu}'
-                    .format(env=envVars, cpu=multiprocessing.cpu_count()))
+            cpu_count = multiprocessing.cpu_count()
+            cci = os.environ.get('CIRCLECI')
+            if cci != None and cci == 'true':
+                cpu_count = 4;
+
+            self.runCmd('{env} make all-gcc -j {c}'
+                    .format(env=envVars, c=cpu_count), verbose=True)
 
             self.runCmd('{env} make install-gcc'
-                    .format(env=envVars, cpu=multiprocessing.cpu_count()))
+                    .format(env=envVars))
 
-            self.runCmd('{env} make all-target-libgcc -j {cpu}'
-                    .format(env=envVars, cpu=multiprocessing.cpu_count()))
+            self.runCmd('{env} make all-target-libgcc -j {c}'
+                    .format(env=envVars, c=cpu_count))
 
             self.runCmd('{env} make install-target-libgcc'
                     .format(env=envVars))

@@ -58,7 +58,7 @@ def bash(cmd, stdout=None, stderr=None):
             check=True)
 
 def bashPython2(cmd, stdout=None, stderr=None):
-    bash('[ ! -d venv2 ] && virtualenv --python=python2 venv2 ; ' +
-         'source venv2/bin/activate ; ' +
-         cmd, stdout, stderr)
-
+    bash(('[ ! -d venv2 ] && virtualenv --python=/usr/bin/python2 venv2; ' +
+          'source venv2/bin/activate; ' +
+          '{c}').format(c=cmd),
+         stdout, stderr)
