@@ -23,7 +23,7 @@ DEFAULT_INSTALL_PREFIX_DIR = '~/opt'
 class InstallArgs(argparse.ArgumentParser):
     def __init__(self, app, defaultVer=None, defaultCodePrefixDir=None,
             defaultInstallPrefixDir=None, defaultForceInstall=None,
-            defaultCrossDir=None, defaultTarget=None,
+            defaultCrossDir=None, defaultTarget=None, defaultGitVer=None,
             apps=None):
         parser = argparse.ArgumentParser()
 
@@ -73,12 +73,20 @@ class InstallArgs(argparse.ArgumentParser):
                 nargs='?',
                 default=defaultVer);
 
+        if defaultGitVer is None:
+            defaultGitVer = defaultVer
+        parser.add_argument('--gitver',
+                help='version to checkout from git (default: {})'.format(defaultGitVer),
+                nargs='?',
+                default=defaultGitVer);
+
         if defaultTarget is None:
             defaultTarget = ''
         parser.add_argument('--target',
                 help='Target to compile (default: {})'.format(defaultTarget),
                 nargs='?',
                 default=defaultTarget);
+
 
 
         # TODO: We must do this so parser "arguments"
