@@ -23,18 +23,24 @@ import os
 import shutil
 import multiprocessing
 
-DEFAULT_VER='2.4.0.1'
+DEFAULT_GIT_VER='2.5.0-rc1'
+DEFAULT_VER='2.4.91'
 APP='qemu-system-arm'
 URL='git://git.qemu.org/qemu.git'
 
 class Installer:
     '''Installer'''
 
-    def __init__(self, defaultVer=DEFAULT_VER, defaultCodePrefixDir=None,
-            defaultInstallPrefixDir=None, defaultForceInstall=None):
+    def __init__(self, defaultVer=DEFAULT_VER, defaultGitVer=DEFAULT_GIT_VER,
+            defaultCodePrefixDir=None, defaultInstallPrefixDir=None,
+            defaultForceInstall=None):
         '''See parseinstallargs for defaults prefixes'''
-        self.args = parseinstallargs.InstallArgs(APP, defaultVer, defaultCodePrefixDir,
-                defaultInstallPrefixDir, defaultForceInstall)
+        self.args = parseinstallargs.InstallArgs(APP,
+                defaultVer=defaultVer,
+                defaultGitVer=defaultGitVer,
+                defaultCodePrefixDir=defaultCodePrefixDir,
+                defaultInstallPrefixDir=defaultInstallPrefixDir,
+                defaultForceInstall=defaultForceInstall)
 
     def install(self):
         dst_dir = os.path.join(self.args.installPrefixDir, 'bin')
@@ -63,7 +69,7 @@ class Installer:
 
             utils.git('clone', [URL, code_dir])
             os.chdir(code_dir)
-            utils.git('checkout', ['v{ver}'.format(ver=self.args.ver)])
+            utils.git('checkout', ['v{ver}'.format(ver=self.args.gitver)])
             utils.git('submodule', ['update', '--init', 'dtc'])
             os.mkdir('build')
             os.chdir('build')
