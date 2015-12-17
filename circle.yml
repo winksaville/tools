@@ -57,11 +57,11 @@ dependencies:
 
   post:
     # Install the tools we need
-    - vendor-install-tools/install.py meson --installPrefixDir=${INSTALL_PREFIX_DIR}
-    - vendor-install-tools/install.py ninja --installPrefixDir=${INSTALL_PREFIX_DIR}
-    - vendor-install-tools/install.py binutils-arm-eabi --installPrefixDir=${INSTALL_PREFIX_DIR}
-    - vendor-install-tools/install.py gcc-arm-eabi --installPrefixDir=${INSTALL_PREFIX_DIR}
-    - vendor-install-tools/install.py qemu-system-arm --installPrefixDir=${INSTALL_PREFIX_DIR}
+    - ./install.py meson --installPrefixDir=${INSTALL_PREFIX_DIR}
+    - ./install.py ninja --installPrefixDir=${INSTALL_PREFIX_DIR}
+    - ./install.py binutils-arm-eabi --installPrefixDir=${INSTALL_PREFIX_DIR}
+    - ./install.py gcc-arm-eabi --installPrefixDir=${INSTALL_PREFIX_DIR}
+    - ./install.py qemu-system-arm --installPrefixDir=${INSTALL_PREFIX_DIR}
 
 test:
   pre:
