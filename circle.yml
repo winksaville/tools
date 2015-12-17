@@ -41,7 +41,8 @@ checkout:
 dependencies:
   cache_directories:
     #- ${INSTALL_PREFIX_DIR_HOME_REL} # This doesn't work.
-    - ~/opt
+    #    NO cache for testing.
+    #- ~/opt
 
   pre:
     # Default to python 3.5.0, needed because subprocess.run is used in vendor-install-tools
