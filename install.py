@@ -29,7 +29,8 @@ import os
 import subprocess
 import argparse
 
-all_apps = ['ninja', 'meson', 'binutils-arm-eabi', 'gcc-arm-eabi', 'qemu-system-arm']
+all_apps = ['ninja', 'meson', 'binutils-i586-elf', 'binutils-arm-eabi', 'gcc-i586-elf',
+        'gcc-arm-eabi', 'qemu-system-arm']
 
 args = parseinstallargs.InstallArgs('all', apps=all_apps)
 
@@ -51,11 +52,17 @@ for app in args.apps:
     elif app == 'binutils-arm-eabi':
         installer = binutils_install.Installer(defaultTarget='arm-eabi')
         installer.install()
+    elif app == 'binutils-i586-elf':
+        installer = binutils_install.Installer(defaultTarget='i586-elf')
+        installer.install()
     elif app == 'binutils-x86_64':
         installer = binutils_install.Installer(defaultTarget='x86_64-pc-linux')
         installer.install()
     elif app == 'gcc-arm-eabi':
         installer = gcc_install.Installer(defaultTarget='arm-eabi')
+        installer.install()
+    elif app == 'gcc-i586-elf':
+        installer = gcc_install.Installer(defaultTarget='i586-elf')
         installer.install()
     elif app == 'gcc-x86_64':
         print('gcc-x86_64 ******* NOT YET WORKING ********')
