@@ -46,7 +46,7 @@ def main():
   branch = 'v{0}'.format(settings['version'])
   shutil.rmtree(code_dir, ignore_errors=True)
   installlib.makedirs(code_dir)
-  installlib.git_clone(GIT_URL, code_dir, branch=branch)
+  installlib.git_clone(GIT_URL, code_dir, branch=branch, depth=5)
   os.chdir(code_dir)
 
   # Compile ninja
@@ -56,7 +56,6 @@ def main():
   installlib.makedirs(dst_dir)
   shutil.rmtree(dst_bin, ignore_errors=True)
   shutil.copy2('ninja', dst_bin)
-
 
 if __name__ == '__main__':
   main()

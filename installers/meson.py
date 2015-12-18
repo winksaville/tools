@@ -18,7 +18,36 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+import os
+import shutil
 import installlib
 
-installlib.register('ninja', 'installers/ninja.py', version='1.6.0')
-installlib.register('meson', 'installers/meson.py', version='0.27.0')
+GIT_URL = 'https://github.com/mesonbuild/meson.git'
+
+def main():
+  dst_dir = os.path.join(settings['prefix'], 'bin')
+  dst_bin = os.path.join(dst_dir, 'meson')
+
+  try:
+    output = installlib.run_piped([dst_bin, '-v']).stdout
+  except OSError:
+    output = None
+  if output and output.startswith(settings['version']):
+    print('meson {0} already installed'.format(settings['version']))
+    if not settings['force_install']:
+      return
+
+  print('installing meson {0} ...'.format(settings['version']))
+  if output:
+    print('note: existing installation of meson {0} will be removed'.format(settings['version']))
+
+  code_dir = os.path.join(settings['temp'], 'meson')
+  branch = settings['version']
+  shutil.rmtree(code_dir, ignore_errors=True)
+  installlib.git_clone(GIT_URL, code_dir, branch=branch, depth=5)
+  os.chdir(code_dir)
+
+  installlib.run(['./install_meson.py', '--prefix', settings['prefix']])
+
+if __name__ == '__main__':
+  main()
