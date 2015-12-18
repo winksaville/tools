@@ -19,3 +19,5 @@
 # THE SOFTWARE.
 
 import installlib
+
+installlib.register('ninja', 'installers/ninja.py', version='1.6.0')
