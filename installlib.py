@@ -112,7 +112,14 @@ def quote_args(args):
 # ============================================================================
 # ============================================================================
 
-def git_clone(url, directory=None, branch=None, depth=None, **kwargs):
+def git(*args, **kwargs):
+  ''' Simple wrapper for calling git. '''
+
+  command = ['git']
+  command += args
+  return run(command, **kwargs)
+
+def git_clone(url, directory=None, branch=None, depth=None, recursive=True, **kwargs):
   ''' Clone a git repository at *url* to the specified *directory*.
   With *branch*, you can specify the branch or git tag to clone from.
   The *depth* specifies the number of commits to download. '''
@@ -121,6 +128,7 @@ def git_clone(url, directory=None, branch=None, depth=None, **kwargs):
   command += [directory] if directory else []
   command += ['--branch', branch] if branch else []
   command += ['--depth', str(depth)] if depth else []
+  command += ['--recursive'] if recursive else []
   return run(command, **kwargs)
 
 def download_extract(url, directory):
