@@ -23,3 +23,4 @@ import installlib
 installlib.register('ninja', 'installers/ninja.py', version='1.6.0')
 installlib.register('meson', 'installers/meson.py', version='0.27.0')
 installlib.register('qemu', 'installers/qemu.py', version='2.4.91', co_version='2.5.0-rc1')
+installlib.register('binutils', 'installers/binutils.py', version='2.25.1', cross_dir='cross', target='arm-eabi')
