@@ -66,7 +66,7 @@ class Installer:
             utils.git('checkout', ['crosstool-ng-{}'.format(self.args.ver)])
 
             subprocess.check_call(['./bootstrap'])
-            subprocess.check_call(['./configure', '--prefix={}'.format(self.args.codePrefixDir)])
+            subprocess.check_call(['./configure', '--prefix={}'.format(self.args.installPrefixDir)])
             subprocess.check_call(['make'])
             subprocess.check_call(['make', 'install'])
 
