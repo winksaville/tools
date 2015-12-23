@@ -60,6 +60,7 @@ dependencies:
     # Install the tools we need
     - ./install.py meson --installPrefixDir=${INSTALL_PREFIX_DIR}
     - ./install.py ninja --installPrefixDir=${INSTALL_PREFIX_DIR}
+    - ./install.py ct-ng --installPrefixDir=${INSTALL_PREFIX_DIR}
     - ./install.py binutils-arm-eabi --installPrefixDir=${INSTALL_PREFIX_DIR}
     - ./install.py gcc-arm-eabi --installPrefixDir=${INSTALL_PREFIX_DIR}
     - ./install.py qemu-system-arm --installPrefixDir=${INSTALL_PREFIX_DIR}

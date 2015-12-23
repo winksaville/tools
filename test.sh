@@ -81,6 +81,7 @@ test_installed () {
 test_all () {
   test_installed ninja "--version" "${THIS_DIR}/ninja_install.py printVer"
   test_installed meson "-v" "${THIS_DIR}/meson_install.py printVer"
+  test_installed ct-ng "version" "${THIS_DIR}/crosstool_ng_install.py printVer"
   test_installed arm-eabi-ld "--version" "${THIS_DIR}/binutils_install.py printVer"
   test_installed arm-eabi-gdb "--version" "${THIS_DIR}/binutils_install.py printGdbVer"
   test_installed arm-eabi-gcc "--version" "${THIS_DIR}/gcc_install.py printVer"
@@ -136,7 +137,7 @@ full_install() {
 help () {
   echo "Usage: $0 <parameters> [install_prefix_dir]"
   echo "Parameters:"
-  echo "  app: ninja | meson | arm-eabi-ld | arm-eabi-gdb"
+  echo "  app: ninja | meson | ct-ng | arm-eabi-ld | arm-eabi-gdb"
   echo "       arm-eabi-gcc | qemu-system-arm"
   echo "  quick: assumes previously installed and runs tests"
   echo "  install_all: install all"
@@ -185,6 +186,9 @@ case $1 in
   ;;
 "meson")
   test_installed meson "-v" "${THIS_DIR}/meson_install.py printVer"
+  ;;
+"ct-ng")
+  test_installed ct-ng "version" "${THIS_DIR}/crosstool_ng_install.py printVer"
   ;;
 "arm-eabi-ld")
   test_installed arm-eabi-ld "--version" "${THIS_DIR}/binutils_install.py printVer"

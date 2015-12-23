@@ -19,6 +19,7 @@
 import parseinstallargs
 import ninja_install
 import meson_install
+import crosstool_ng_install
 import binutils_install
 import gcc_install
 import qemu_install
@@ -29,8 +30,10 @@ import os
 import subprocess
 import argparse
 
-all_apps = ['ninja', 'meson', 'binutils-i586-elf', 'binutils-arm-eabi', 'gcc-i586-elf',
-        'gcc-arm-eabi', 'qemu-system-arm']
+all_apps = ['ninja', 'meson', 'ct-ng',
+        'binutils-i586-elf', 'binutils-arm-eabi',
+        'gcc-i586-elf', 'gcc-arm-eabi',
+        'qemu-system-arm']
 
 args = parseinstallargs.InstallArgs('all', apps=all_apps)
 
@@ -48,6 +51,9 @@ for app in args.apps:
         installer.install()
     elif app == 'meson':
         installer = meson_install.Installer()
+        installer.install()
+    elif app == 'ct-ng':
+        installer = crosstool_ng_install.Installer()
         installer.install()
     elif app == 'binutils-arm-eabi':
         installer = binutils_install.Installer(defaultTarget='arm-eabi')
