@@ -2,7 +2,7 @@ machine:
   environment:
     INSTALL_PREFIX_DIR_HOME_REL: ~/opt
     INSTALL_PREFIX_DIR: ${HOME}/opt
-    PATH: ${INSTALL_PREFIX_DIR}/bin:${INSTALL_PREFIX_DIR}/cross/bin:${INSTALL_PREFIX_DIR}/x-tools/x86_64-unknown-elf/bin:${PATH}
+    PATH: ${INSTALL_PREFIX_DIR}/bin:${INSTALL_PREFIX_DIR}/x-tools/x86_64-unknown-elf/bin:${INSTALL_PREFIX_DIR}/x-tools/i386-unknown-elf/bin:${INSTALL_PREFIX_DIR}/x-tools/arm-unknown-eabi/bin:${PATH}
 
   #python:
   #  version: 3.5.0
@@ -63,9 +63,14 @@ dependencies:
     # Install the tools we need
     - ./install.py meson --installPrefixDir=${INSTALL_PREFIX_DIR}
     - ./install.py ninja --installPrefixDir=${INSTALL_PREFIX_DIR}
+      #- ./install.py binutils-arm-eabi --installPrefixDir=${INSTALL_PREFIX_DIR}
+      # - ./install.py gcc-arm-eabi --installPrefixDir=${INSTALL_PREFIX_DIR}
+      #- ./install.py binutils-i586-elf --installPrefixDir=${INSTALL_PREFIX_DIR}
+      # - ./install.py gcc-i586-elf --installPrefixDir=${INSTALL_PREFIX_DIR}
     - ./install.py ct-ng --installPrefixDir=${INSTALL_PREFIX_DIR}
-    - ./install.py binutils-arm-eabi --installPrefixDir=${INSTALL_PREFIX_DIR}
-    - ./install.py gcc-arm-eabi --installPrefixDir=${INSTALL_PREFIX_DIR}
+    - ./install.py gcc-x86_64 --installPrefixDir=${INSTALL_PREFIX_DIR}
+    - ./install.py gcc-i386 --installPrefixDir=${INSTALL_PREFIX_DIR}
+    - ./install.py gcc-arm --installPrefixDir=${INSTALL_PREFIX_DIR}
     - ./install.py qemu-system-arm --installPrefixDir=${INSTALL_PREFIX_DIR}
 
 test:

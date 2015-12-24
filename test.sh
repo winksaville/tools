@@ -30,11 +30,15 @@ ALT_INSTALL_PREFIX_DIR=$HOME/optx
 # to be installed in these paths
 DFLT_INSTALL_PATHS=("${DEFAULT_INSTALL_PREFIX_DIR}/bin"
   "${DEFAULT_INSTALL_PREFIX_DIR}/cross/bin"
-  "${DEFAULT_INSTALL_PREFIX_DIR}/x-tools/x86_64-unknown-elf/bin")
+  "${DEFAULT_INSTALL_PREFIX_DIR}/x-tools/x86_64-unknown-elf/bin"
+  "${DEFAULT_INSTALL_PREFIX_DIR}/x-tools/i386-unknown-elf/bin"
+  "${DEFAULT_INSTALL_PREFIX_DIR}/x-tools/arm-unknown-eabi/bin")
 
 ALT_INSTALL_PATHS=("${ALT_INSTALL_PREFIX_DIR}/bin"
+  "${ALT_INSTALL_PREFIX_DIR}/cross/bin"
   "${ALT_INSTALL_PREFIX_DIR}/x-tools/x86_64-unknown-elf/bin"
-  "${ALT_INSTALL_PREFIX_DIR}/cross/bin")
+  "${ALT_INSTALL_PREFIX_DIR}/x-tools/i386-unknown-elf/bin"
+  "${ALT_INSTALL_PREFIX_DIR}/x-tools/arm-unknown-eabi/bin")
 
 add_install_paths_to_org_path () {
   declare -a ary1=("${!1}")
@@ -87,11 +91,15 @@ test_all () {
   test_installed ninja "--version" "${THIS_DIR}/ninja_install.py printVer"
   test_installed meson "-v" "${THIS_DIR}/meson_install.py printVer"
   test_installed ct-ng "version" "${THIS_DIR}/crosstool_ng_install.py printVer"
-  test_installed arm-eabi-ld "--version" "${THIS_DIR}/binutils_install.py printVer"
-  test_installed arm-eabi-gdb "--version" "${THIS_DIR}/binutils_install.py printGdbVer"
-  test_installed arm-eabi-gcc "--version" "${THIS_DIR}/gcc_install.py printVer"
+  #test_installed arm-eabi-ld "--version" "${THIS_DIR}/binutils_install.py printVer"
+  #test_installed arm-eabi-gdb "--version" "${THIS_DIR}/binutils_install.py printGdbVer"
+  #test_installed arm-eabi-gcc "--version" "${THIS_DIR}/gcc_install.py printVer"
   test_installed x86_64-unknown-elf-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
   test_installed x86_64-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccVer"
+  test_installed i386-unknown-elf-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
+  test_installed i386-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccVer"
+  test_installed arm-unknown-eabi-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
+  test_installed arm-unknown-eabi-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccVer"
   test_installed qemu-system-arm "--version" "${THIS_DIR}/qemu_install.py printVer"
 }
 
@@ -141,9 +149,11 @@ full_install() {
 help () {
   echo "Usage: $0 <parameters> [install_prefix_dir]"
   echo "Parameters:"
-  echo "  app: ninja | meson | ct-ng | arm-eabi-gdb"
-  echo "       arm-eabi-ld | arm-eabi-gcc"
+  echo "  app: ninja | meson | ct-ng"
+  #echo "       arm-eabi-gdb | arm-eabi-ld | arm-eabi-gcc"
   echo "       x86_64-unknown-elf-ld | x86_64-unknown-elf-gcc"
+  echo "       i386-unknown-elf-ld | i386-unknown-elf-gcc"
+  echo "       arm-unknown-eabi-ld | arm-unknown-eabi-gcc"
   echo "       qemu-system-arm"
   echo "  quick: assumes previously installed and runs tests"
   echo "  install_all: install all"
@@ -213,6 +223,18 @@ case $1 in
    ;;
 "x86_64-unknown-elf-gcc")
    test_installed x86_64-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccVer"
+   ;;
+"i386-unknown-elf-ld")
+   test_installed i386-unknown-elf-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
+   ;;
+"i386-unknown-elf-gcc")
+   test_installed i386-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccVer"
+   ;;
+"arm-unknown-eabi-ld")
+   test_installed arm-unknown-eabi-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
+   ;;
+"i386-unknown-elf-gcc")
+   test_installed arm-unknown-eabi-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccVer"
    ;;
 *)
   help

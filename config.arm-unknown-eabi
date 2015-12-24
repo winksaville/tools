@@ -87,23 +87,35 @@ CT_LOG_FILE_COMPRESS=y
 #
 # Target options
 #
-CT_ARCH="x86"
+CT_ARCH="arm"
+CT_ARCH_SUPPORTS_BOTH_MMU=y
+CT_ARCH_SUPPORTS_BOTH_ENDIAN=y
 CT_ARCH_SUPPORTS_32=y
 CT_ARCH_SUPPORTS_64=y
 CT_ARCH_SUPPORTS_WITH_ARCH=y
 CT_ARCH_SUPPORTS_WITH_CPU=y
 CT_ARCH_SUPPORTS_WITH_TUNE=y
+CT_ARCH_SUPPORTS_WITH_FLOAT=y
+CT_ARCH_SUPPORTS_WITH_FPU=y
+CT_ARCH_SUPPORTS_SOFTFP=y
+CT_ARCH_DEFAULT_HAS_MMU=y
+CT_ARCH_DEFAULT_LE=y
 CT_ARCH_DEFAULT_32=y
 CT_ARCH_ARCH=""
 CT_ARCH_CPU=""
 CT_ARCH_TUNE=""
-# CT_ARCH_32 is not set
-CT_ARCH_64=y
-CT_ARCH_BITNESS=64
+CT_ARCH_FPU=""
+# CT_ARCH_BE is not set
+CT_ARCH_LE=y
+CT_ARCH_32=y
+# CT_ARCH_64 is not set
+CT_ARCH_BITNESS=32
+# CT_ARCH_FLOAT_HW is not set
+# CT_ARCH_FLOAT_SW is not set
 CT_TARGET_CFLAGS=""
 CT_TARGET_LDFLAGS=""
 # CT_ARCH_alpha is not set
-# CT_ARCH_arm is not set
+CT_ARCH_arm=y
 # CT_ARCH_avr is not set
 # CT_ARCH_m68k is not set
 # CT_ARCH_mips is not set
@@ -112,7 +124,7 @@ CT_TARGET_LDFLAGS=""
 # CT_ARCH_s390 is not set
 # CT_ARCH_sh is not set
 # CT_ARCH_sparc is not set
-CT_ARCH_x86=y
+# CT_ARCH_x86 is not set
 # CT_ARCH_xtensa is not set
 CT_ARCH_alpha_AVAILABLE=y
 CT_ARCH_arm_AVAILABLE=y
@@ -133,12 +145,26 @@ CT_ARCH_SUFFIX=""
 # Generic target options
 #
 # CT_MULTILIB is not set
-CT_ARCH_USE_MMU=y
+# CT_ARCH_USE_MMU is not set
+CT_ARCH_ENDIAN="little"
 
 #
 # Target optimisations
 #
-CT_ARCH_FLOAT=""
+CT_ARCH_EXCLUSIVE_WITH_CPU=y
+CT_ARCH_FLOAT_AUTO=y
+# CT_ARCH_FLOAT_SOFTFP is not set
+CT_ARCH_FLOAT="auto"
+
+#
+# arm other options
+#
+CT_ARCH_ARM_MODE="arm"
+CT_ARCH_ARM_MODE_ARM=y
+# CT_ARCH_ARM_MODE_THUMB is not set
+# CT_ARCH_ARM_INTERWORKING is not set
+CT_ARCH_ARM_EABI_FORCE=y
+CT_ARCH_ARM_EABI=y
 
 #
 # Toolchain options
@@ -161,7 +187,7 @@ CT_TOOLCHAIN_BUGURL=""
 #
 CT_TARGET_VENDOR="unknown"
 CT_TARGET_ALIAS_SED_EXPR=""
-CT_TARGET_ALIAS="x86_64-elf"
+CT_TARGET_ALIAS="arm-eabi"
 
 #
 # Toolchain type
@@ -201,6 +227,8 @@ CT_KERNEL_windows_AVAILABLE=y
 # Binary utilities
 #
 CT_ARCH_BINFMT_ELF=y
+# CT_ARCH_BINFMT_FLAT is not set
+# CT_ARCH_BINFMT_FDPIC is not set
 CT_BINUTILS="binutils"
 CT_BINUTILS_binutils=y
 
@@ -349,8 +377,25 @@ CT_CC_SUPPORT_GOLANG=y
 #
 # CT_DEBUG_dmalloc is not set
 # CT_DEBUG_duma is not set
-# CT_DEBUG_gdb is not set
-# CT_GDB_V_7_10 is not set
+CT_DEBUG_gdb=y
+CT_GDB_CROSS=y
+CT_GDB_CROSS_STATIC=y
+# CT_GDB_CROSS_SIM is not set
+CT_GDB_CROSS_EXTRA_CONFIG_ARRAY=""
+
+#
+# In bare-metal, you'll need to   
+#
+
+#
+# provide your own gdbserver stub.
+#
+
+#
+# gdb version
+#
+# CT_DEBUG_GDB_SHOW_LINARO is not set
+CT_GDB_V_7_10=y
 # CT_GDB_V_7_9_1 is not set
 # CT_GDB_V_7_9 is not set
 # CT_GDB_V_7_8_2 is not set
@@ -369,6 +414,12 @@ CT_CC_SUPPORT_GOLANG=y
 # CT_GDB_V_7_0_1a is not set
 # CT_GDB_V_7_0a is not set
 # CT_GDB_V_6_8a is not set
+CT_GDB_7_2_or_later=y
+CT_GDB_7_0_or_later=y
+CT_GDB_HAS_PKGVERSION_BUGURL=y
+CT_GDB_HAS_PYTHON=y
+CT_GDB_INSTALL_GDBINIT=y
+CT_GDB_VERSION="7.10"
 # CT_DEBUG_ltrace is not set
 # CT_DEBUG_strace is not set
 
@@ -380,11 +431,15 @@ CT_GMP_NEEDED=y
 CT_MPFR_NEEDED=y
 CT_ISL_NEEDED=y
 CT_MPC_NEEDED=y
+CT_EXPAT_NEEDED=y
+CT_NCURSES_NEEDED=y
 CT_COMPLIBS=y
 CT_GMP=y
 CT_MPFR=y
 CT_ISL=y
 CT_MPC=y
+CT_EXPAT=y
+CT_NCURSES=y
 CT_GMP_V_6_0_0=y
 # CT_GMP_V_5_1_3 is not set
 # CT_GMP_V_5_1_1 is not set
@@ -418,8 +473,10 @@ CT_MPC_V_1_0_3=y
 # CT_MPC_V_0_8_1 is not set
 # CT_MPC_V_0_7 is not set
 CT_MPC_VERSION="1.0.3"
-# CT_EXPAT_V_2_1_0 is not set
-# CT_NCURSES_V_6_0 is not set
+CT_EXPAT_V_2_1_0=y
+CT_EXPAT_VERSION="2.1.0"
+CT_NCURSES_V_6_0=y
+CT_NCURSES_VERSION="6.0"
 
 #
 # Companion libraries common options

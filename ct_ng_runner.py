@@ -30,7 +30,7 @@ DEFAULT_VER=GCC_VER
 AN_APP='gcc'
 
 class Builder:
-    '''Buidler for x86_64-unknown-elf-xxx.'''
+    '''Buidler for ct-ng builds'''
 
     def __init__(self, defaultVer=DEFAULT_VER, defaultCodePrefixDir=None,
             defaultInstallPrefixDir=None, defaultForceInstall=None,
@@ -51,21 +51,14 @@ class Builder:
         if self.args.target is None:
             print('No default target expecting something like "x86_64-unknown-elf"')
             return 1
-        print('ct_ng_build: self.args.installPrefixDir={}'
-                .format(self.args.installPrefixDir))
-        print('ct_ng_build: self.args.crossDir={}'.format(self.args.crossDir))
-        print('ct_ng_build: self.args.target={}'.format(self.args.target))
 
         self.args.installPrefixDir = '{}/{}'.format(
                 self.args.installPrefixDir, self.args.target)
-        print('ct_ng_build: installPrefixDir={}'.format(self.args.installPrefixDir))
         dst_dir = os.path.join(self.args.installPrefixDir, 'bin')
-        print('ct_ng_build: dst_dir={}'.format(dst_dir))
         os.makedirs(dst_dir, exist_ok=True)
         retval = 0
 
         self.args.app = '{}-{}'.format(self.args.target, self.args.app)
-        print('ct_ng_build: self.args.app={}'.format(self.args.app))
 
         try:
             dst = os.path.join(dst_dir, self.args.app)
@@ -84,13 +77,13 @@ class Builder:
                     .format(app=self.args.app, ver=self.args.ver))
             code_dir = os.path.join(self.args.codePrefixDir,
                     '{}/{}'.format(self.args.crossDir, self.args.target))
-            print('ct_ng_build: code_dir={}'.format(code_dir))
             if self.args.forceInstall:
                 shutil.rmtree(code_dir, ignore_errors=True)
             os.makedirs(code_dir)
 
-            shutil.copy2('./config.{}'.format(self.args.target),
-                '{}/.config'.format(code_dir))
+            src = os.path.abspath('config.{}'.format(self.args.target))
+            dst = os.path.abspath('{}/.config'.format(code_dir))
+            shutil.copy2(src, dst)
             os.chdir(code_dir)
 
             # Builds and isntall app's

@@ -31,9 +31,11 @@ import os
 import subprocess
 import argparse
 
-all_apps = ['ninja', 'meson', 'ct-ng',
-        'binutils-i586-elf', 'binutils-arm-eabi',
-        'gcc-i586-elf', 'gcc-arm-eabi',
+all_apps = ['ninja', 'meson',
+        #'binutils-i586-elf', 'binutils-arm-eabi',
+        #'gcc-i586-elf', 'gcc-arm-eabi',
+        'ct-ng',
+        'gcc-x86_64', 'gcc-i386', 'gcc-arm',
         'qemu-system-arm']
 
 args = parseinstallargs.InstallArgs('all', apps=all_apps)
@@ -45,8 +47,11 @@ if len(args.apps) == 0:
 if 'all' in args.apps:
     args.apps = all_apps
 
+cwd = os.getcwd();
 # Install the apps
 for app in args.apps:
+    # Start in the current directory
+    os.chdir(cwd)
     if app == 'ninja':
         installer = ninja_install.Installer()
         installer.install()
@@ -70,6 +75,12 @@ for app in args.apps:
         installer.install()
     elif app == 'gcc-x86_64':
         builder = ct_ng_runner.Builder(defaultTarget='x86_64-unknown-elf')
+        builder.build()
+    elif app == 'gcc-i386':
+        builder = ct_ng_runner.Builder(defaultTarget='i386-unknown-elf')
+        builder.build()
+    elif app == 'gcc-arm':
+        builder = ct_ng_runner.Builder(defaultTarget='arm-unknown-eabi')
         builder.build()
     elif app == 'qemu-system-arm':
         installer = qemu_install.Installer()
