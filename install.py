@@ -20,6 +20,7 @@ import parseinstallargs
 import ninja_install
 import meson_install
 import crosstool_ng_install
+import ct_ng_runner
 import binutils_install
 import gcc_install
 import qemu_install
@@ -61,9 +62,6 @@ for app in args.apps:
     elif app == 'binutils-i586-elf':
         installer = binutils_install.Installer(defaultTarget='i586-elf')
         installer.install()
-    elif app == 'binutils-x86_64':
-        installer = binutils_install.Installer(defaultTarget='x86_64-pc-linux')
-        installer.install()
     elif app == 'gcc-arm-eabi':
         installer = gcc_install.Installer(defaultTarget='arm-eabi')
         installer.install()
@@ -71,29 +69,8 @@ for app in args.apps:
         installer = gcc_install.Installer(defaultTarget='i586-elf')
         installer.install()
     elif app == 'gcc-x86_64':
-        print('gcc-x86_64 ******* NOT YET WORKING ********')
-        installer = gcc_install.Installer(defaultTarget='x86_64-pc-linux',
-                extraFlags=[
-                    '--enable-threads=posix',
-                    '--enable-libmpx',
-                    '--enable-__cxa_atexit',
-                    '--disable-libunwind-exceptions',
-                    '--enable-clocale=gnu',
-                    '--disable-libstdcxx-pch',
-                    '--disable-libssp',
-                    '--enable-gnu-unique-object',
-                    '--enable-linker-build-id',
-                    '--enable-lto',
-                    '--enable-plugin',
-                    '--enable-install-libiberty',
-                    '--with-linker-hash-style=gnu',
-                    '--enable-gnu-indirect-function',
-                    '--disable-multilib',
-                    '--disable-werror',
-                    '--enable-checking=release',
-                    '--with-default-libstdcxx-abi=gcc4-compatible',
-                ])
-        installer.install()
+        builder = ct_ng_runner.Builder(defaultTarget='x86_64-unknown-elf')
+        builder.build()
     elif app == 'qemu-system-arm':
         installer = qemu_install.Installer()
         installer.install()

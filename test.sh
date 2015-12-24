@@ -28,8 +28,13 @@ ALT_INSTALL_PREFIX_DIR=$HOME/optx
 
 # Default install paths, we expect the executables
 # to be installed in these paths
-DFLT_INSTALL_PATHS=("${DEFAULT_INSTALL_PREFIX_DIR}/bin" "${DEFAULT_INSTALL_PREFIX_DIR}/cross/bin")
-ALT_INSTALL_PATHS=("${ALT_INSTALL_PREFIX_DIR}/bin" "${ALT_INSTALL_PREFIX_DIR}/cross/bin")
+DFLT_INSTALL_PATHS=("${DEFAULT_INSTALL_PREFIX_DIR}/bin"
+  "${DEFAULT_INSTALL_PREFIX_DIR}/cross/bin"
+  "${DEFAULT_INSTALL_PREFIX_DIR}/x-tools/x86_64-unknown-elf/bin")
+
+ALT_INSTALL_PATHS=("${ALT_INSTALL_PREFIX_DIR}/bin"
+  "${ALT_INSTALL_PREFIX_DIR}/x-tools/x86_64-unknown-elf/bin"
+  "${ALT_INSTALL_PREFIX_DIR}/cross/bin")
 
 add_install_paths_to_org_path () {
   declare -a ary1=("${!1}")
@@ -85,9 +90,8 @@ test_all () {
   test_installed arm-eabi-ld "--version" "${THIS_DIR}/binutils_install.py printVer"
   test_installed arm-eabi-gdb "--version" "${THIS_DIR}/binutils_install.py printGdbVer"
   test_installed arm-eabi-gcc "--version" "${THIS_DIR}/gcc_install.py printVer"
-  #test_installed x86_64-pc-linux-ld "--version" "${THIS_DIR}/binutils_install.py printVer"
-  #test_installed x86_64-pc-linux-gdb "--version" "${THIS_DIR}/binutils_install.py printGdbVer"
-  #test_installed x86_64-pc-linux-gcc "--version" "${THIS_DIR}/gcc_install.py printVer"
+  test_installed x86_64-unknown-elf-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
+  test_installed x86_64-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccVer"
   test_installed qemu-system-arm "--version" "${THIS_DIR}/qemu_install.py printVer"
 }
 
@@ -137,8 +141,10 @@ full_install() {
 help () {
   echo "Usage: $0 <parameters> [install_prefix_dir]"
   echo "Parameters:"
-  echo "  app: ninja | meson | ct-ng | arm-eabi-ld | arm-eabi-gdb"
-  echo "       arm-eabi-gcc | qemu-system-arm"
+  echo "  app: ninja | meson | ct-ng | arm-eabi-gdb"
+  echo "       arm-eabi-ld | arm-eabi-gcc"
+  echo "       x86_64-unknown-elf-ld | x86_64-unknown-elf-gcc"
+  echo "       qemu-system-arm"
   echo "  quick: assumes previously installed and runs tests"
   echo "  install_all: install all"
   echo "  force_install: force install ninja and meson"
@@ -202,15 +208,12 @@ case $1 in
 "qemu-system-arm")
   test_installed qemu-system-arm "--version" "${THIS_DIR}/qemu_install.py printVer"
   ;;
-#"x86_64-pc-linux-ld")
-#   test_installed x86_64-pc-linux-ld "--version" "${THIS_DIR}/binutils_install.py printVer"
-#   ;;
-#"x86_64-pc-linux-ld")
-#   test_installed x86_64-pc-linux-gdb "--version" "${THIS_DIR}/binutils_install.py printGdbVer"
-#   ;;
-#"x86_64-pc-linux-ld")
-#   test_installed x86_64-pc-linux-gcc "--version" "${THIS_DIR}/gcc_install.py printVer"
-#   ;;
+"x86_64-unknown-elf-ld")
+   test_installed x86_64-unknown-elf-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
+   ;;
+"x86_64-unknown-elf-gcc")
+   test_installed x86_64-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccVer"
+   ;;
 *)
   help
   ;;
