@@ -87,7 +87,7 @@ class Builder:
             os.chdir(code_dir)
 
             # Builds and isntall app's
-            subprocess.check_call(['ct-ng', '-j4', 'build'])
+            subprocess.check_call(['ct-ng', '-j1', 'build'])
 
         return retval
 
