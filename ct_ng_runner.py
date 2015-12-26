@@ -81,7 +81,8 @@ class Builder:
                 shutil.rmtree(code_dir, ignore_errors=True)
             os.makedirs(code_dir)
 
-            src = os.path.abspath('config.{}'.format(self.args.target))
+            thisDir = os.path.dirname(os.path.realpath(__file__))
+            src = os.path.abspath('{}/config.{}'.format(thisDir, self.args.target))
             dst = os.path.abspath('{}/.config'.format(code_dir))
             shutil.copy2(src, dst)
             os.chdir(code_dir)
