@@ -42,7 +42,6 @@ def main():
     output = installlib.run_piped([app, '--version']).stdout
   except OSError:
     output = None
-  print(output)
   if output and settings['version'] in output:
     print('{0} {1} already installed'.format(APP, settings['version']))
     if not settings['force_install']:
