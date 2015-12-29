@@ -89,7 +89,10 @@ def main():
   if settings['target']:
     command += ['--target=' + settings['target']]
 
-  installlib.run(command)
+  settings.setdefault('silent', False)
+  if settings['silent']:
+    print('note: peforming silent configuration of GCC')
+  installlib.run(command, devnull=settings['silent'])
   installlib.run(['make', 'all-gcc', '-j', str(cpu_count())])
   installlib.run(['make', 'install-gcc'])
   installlib.run(['make', 'all-target-libgcc', '-j', str(cpu_count())])

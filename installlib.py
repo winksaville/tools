@@ -81,12 +81,35 @@ class CompletedProcess(object):
     if self.returncode != 0:
       raise CalledProcessError(self.returncode, self.args, self.stdout, self.stderr)
 
-def run(command, *args, **kwargs):
+def run(command, **kwargs):
+  devnull = kwargs.pop('devnull', False)
+  piped = kwargs.pop('piped', False)
+  merge_pipes = kwargs.pop('merge_pipes', True)
+  if piped:
+    if devnull:
+      raise TypeError('conflicting arguments piped and devnull')
+    if not kwargs.get('stdout'):
+      kwargs['stdout'] = subprocess.PIPE
+    if not kwargs.get('stderr'):
+      if merge_pipes:
+        kwargs['stderr'] = subprocess.STDOUT
+      else:
+        kwargs['stderr'] = subprocess.STDERR
+  elif devnull:
+    if hasattr(subprocess, 'DEVNULL'):
+      dev = subprocess.DEVNULL
+    else:
+      dev = open(os.devnull, 'wb')
+      kwargs['close_fds'] = True
+    kwargs['stdout'] = dev
+    kwargs['stderr'] = dev
+
   encoding = kwargs.pop('encoding', sys.getdefaultencoding())
   check = kwargs.pop('check', True)
   if kwargs.get('shell') and not isinstance(command, str):
     command = quote_args(command)
-  process = subprocess.Popen(command, *args, **kwargs)
+
+  process = subprocess.Popen(command, **kwargs)
   stdout, stderr = process.communicate()
   if encoding:
     if stdout:
@@ -98,10 +121,9 @@ def run(command, *args, **kwargs):
     result.check_returncode()
   return result
 
-def run_piped(command, *args, **kwargs):
-  merge = kwargs.pop('merge', True)
-  stderr = subprocess.STDOUT if merge else subprocess.PIPE
-  return run(command, *args, stdout=subprocess.PIPE, stderr=stderr, **kwargs)
+def run_piped(command, **kwargs):
+  kwargs.setdefault('merge_pipes', True)
+  return run(command, piped=True, **kwargs)
 
 def run_in_venv(venv_path, command, *args, **kwargs):
   if isinstance(command, string_type):
@@ -265,7 +287,7 @@ def main():
   options.setdefault('dry', False)
 
   tools = [args.target] if args.target != 'all' else sorted(installers)
-  for name in sorted(installers):
+  for name in tools:
     curr_options = options.copy()
     curr_options.update(tool_options.get(name, {}))
     if curr_options['dry']:
