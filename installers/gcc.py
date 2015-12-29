@@ -28,9 +28,6 @@ try:
 except ImportError:
   cpu_count = lambda: 1
 
-if sys.version_info[0] < 3:
-  sys.exit('error: GCC installation requires Python 3 (for extracting tar.xz)')
-
 GCC_URL  = 'http://ftp.gnu.org/gnu/gcc/gcc-{0}/gcc-{0}.tar.bz2'
 GMP_URL  = 'http://ftp.gnu.org/gnu/gmp/gmp-{0}.tar.xz'
 MPFR_URL = 'http://ftp.gnu.org/gnu/mpfr/mpfr-{0}.tar.xz'
