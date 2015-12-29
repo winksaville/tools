@@ -31,9 +31,9 @@ import zipfile
 string_type = (str if sys.version_info[0] == 3 else basestring)
 
 try:
-  from shlex import quote
+  from shlex import quote as _quote
 except ImportError:
-  from pipes import quote
+  from pipes import quote as _quote
 
 try:
   from urllib.request import urlopen
@@ -82,16 +82,25 @@ class CompletedProcess(object):
       raise CalledProcessError(self.returncode, self.args, self.stdout, self.stderr)
 
 def run(command, *args, **kwargs):
+  encoding = kwargs.pop('encoding', sys.getdefaultencoding())
   check = kwargs.pop('check', True)
+  if kwargs.get('shell') and not isinstance(command, str):
+    command = quote_args(command)
   process = subprocess.Popen(command, *args, **kwargs)
   stdout, stderr = process.communicate()
+  if encoding:
+    if stdout:
+      stdout = stdout.decode(encoding)
+    if stderr:
+      stderr = stdout.decode(encoding)
   result = CompletedProcess(command, process.returncode, stdout, stderr)
   if check:
     result.check_returncode()
   return result
 
-def run_piped(command, *args, **kwargs):
-  return run(command, *args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs)
+def run_piped(command, *args, merge=True, **kwargs):
+  stderr = subprocess.STDOUT if merge else subprocess.PIPE
+  return run(command, *args, stdout=subprocess.PIPE, stderr=stderr, **kwargs)
 
 def run_in_venv(venv_path, command, *args, **kwargs):
   if isinstance(command, string_type):
@@ -106,8 +115,19 @@ def run_in_venv(venv_path, command, *args, **kwargs):
     raise ValueError('virtualenv does not exist or is invalid', venv_path)
   return run(command, *args, shell=True, **kwargs)
 
+def quote(arg):
+  if isinstance(arg, safe):
+    return str(arg)
+  return _quote(arg)
+
 def quote_args(args):
   return ' '.join(map(quote, args))
+
+class safe(object):
+  def __init__(self, string):
+    self.string = string
+  def __str__(self):
+    return self.string
 
 # ============================================================================
 # ============================================================================
