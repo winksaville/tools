@@ -22,6 +22,7 @@
 from __future__ import print_function
 import os
 import sys
+import posixpath
 import runpy
 import subprocess
 import tempfile
@@ -106,8 +107,15 @@ def run(command, **kwargs):
 
   encoding = kwargs.pop('encoding', sys.getdefaultencoding())
   check = kwargs.pop('check', True)
+  print_cmd = kwargs.pop('print_cmd', False)
   if kwargs.get('shell') and not isinstance(command, str):
     command = quote_args(command)
+
+  if print_cmd:
+    if isinstance(command, str):
+      print('$', command)
+    else:
+      print('$', quote_args(command))
 
   process = subprocess.Popen(command, **kwargs)
   stdout, stderr = process.communicate()
@@ -174,22 +182,38 @@ def git_clone(url, directory=None, branch=None, depth=None, recursive=True, **kw
   command += ['--recursive'] if recursive else []
   return run(command, **kwargs)
 
-def download_extract(url, directory, strip_components=0):
+def download_extract(url, directory, temp=None, strip_components=0):
   ''' Downloads the file at the specified *url* using wget and
   extracts its contents using tar, stripping the number of specified
   components. '''
 
   makedirs(directory)
-  with tempfile.NamedTemporaryFile(delete=False) as dst:
-    dst.close()
-    try:
+  if temp is not None:
+    makedirs(temp)
+    basename = posixpath.basename(url)
+    temp_fn = os.path.join(temp, basename)
+  else:
+    fd, temp_fn = tempfile.mkstemp()
+    os.close(fd)
+
+  try:
+    if not temp or not os.path.isfile(temp_fn):
       print("  Downloading", url)
-      run(['wget', '--timeout=20', '-qO-', url, safe('>'), dst.name], shell=True)
-      print("  Extracting to", directory)
-      run(['tar', '-xf', dst.name, '--strip-components=%d' % strip_components,
-        '-C', directory])
-    finally:
-      os.remove(dst.name)
+      try:
+        run(['wget', '--timeout=20', '-qO-', url, '--show-progress', safe('>'), temp_fn], shell=True)
+      except BaseException as exc:
+        # We delete the file if anything happened while downloading it.
+        os.remove(temp_fn)
+        raise
+    else:
+      print("  Already downloaded", basename)
+    print("  Extracting to", directory)
+    run(['tar', '-xf', temp_fn, '--strip-components=%d' % strip_components, '-C', directory])
+  finally:
+    if not temp and os.path.isfile(temp_fn):
+      # Only delete the downloaded file if its a "system" temporary file
+      # and was not downloaded to an explicit temporary directory.
+      os.remove(temp_fn)
 
 def ensure_venv(directory, python_bin='python'):
   ''' Ensures that a virtual environment at *directory* exists. If it

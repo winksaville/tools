@@ -36,6 +36,7 @@ MPC_URL  = 'http://ftp.gnu.org/gnu/mpc/mpc-{0}.tar.gz'
 def main():
   dst_dir = os.path.join(settings['prefix'], 'bin')
   tmp_dir = os.path.join(settings['temp'], 'gcc')
+  download_dir = os.path.join(settings['temp'], '_download')
   if settings['target']:
     tmp_dir += '-' + settings['target']
 
@@ -64,16 +65,16 @@ def main():
   shutil.rmtree(tmp_dir, ignore_errors=True)
 
   url = GCC_URL.format(settings['version'])
-  installlib.download_extract(url, gcc_path, strip_components=1)
+  installlib.download_extract(url, gcc_path, temp=download_dir, strip_components=1)
 
   url = GMP_URL.format(settings['gmp_version'])
-  installlib.download_extract(url, gmp_path, strip_components=1)
+  installlib.download_extract(url, gmp_path, temp=download_dir, strip_components=1)
 
   url = MPFR_URL.format(settings['mpfr_version'])
-  installlib.download_extract(url, mpfr_path, strip_components=1)
+  installlib.download_extract(url, mpfr_path, temp=download_dir, strip_components=1)
 
   url = MPC_URL.format(settings['mpc_version'])
-  installlib.download_extract(url, mpc_path, strip_components=1)
+  installlib.download_extract(url, mpc_path, temp=download_dir, strip_components=1)
 
   os.chdir(gcc_path)
   installlib.makedirs('build')
@@ -90,13 +91,16 @@ def main():
     command += ['--target=' + settings['target']]
 
   settings.setdefault('silent', False)
+  options = {'print_cmd': True}
   if settings['silent']:
-    print('note: peforming silent configuration of GCC')
-  installlib.run(command, devnull=settings['silent'])
-  installlib.run(['make', 'all-gcc', '-j', str(cpu_count())])
-  installlib.run(['make', 'install-gcc'])
-  installlib.run(['make', 'all-target-libgcc', '-j', str(cpu_count())])
-  installlib.run(['make', 'install-target-libgcc'])
+    print('note: peforming silent installation of GCC')
+    options['devnull'] = True
+
+  installlib.run(command, **options)
+  installlib.run(['make', 'all-gcc', '-j', str(cpu_count())], **options)
+  installlib.run(['make', 'install-gcc'], **options)
+  installlib.run(['make', 'all-target-libgcc', '-j', str(cpu_count())], **options)
+  installlib.run(['make', 'install-target-libgcc'], **options)
 
 if __name__ == '__main__':
   main()
