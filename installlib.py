@@ -206,8 +206,8 @@ def download_extract(url, directory, temp=None, strip_components=0):
       try:
         cmd = ['wget', '--timeout=20', '-qO-', url, safe('>'), temp_fn]
         if wget_version() >= '1.16.1':
+          # Are there older versions that support this option?
           cmd.insert(4, '--show-progress')
-        print(cmd)
         run(cmd, shell=True)
       except BaseException as exc:
         # We delete the file if anything happened while downloading it.
