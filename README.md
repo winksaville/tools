@@ -1,5 +1,7 @@
 # Vendor Install Tools
 
+[![Build Status](https://travis-ci.org/NiklasRosenstein/vendor-install-tools.svg?branch=new)](https://travis-ci.org/NiklasRosenstein/vendor-install-tools)
+
 This repository contains scripts to install the following packages
 as a cross-compiling toolset.
 
@@ -9,7 +11,7 @@ as a cross-compiling toolset.
 - ninja
 - qemu
 
-__Command Line Interface___
+__Command Line Interface__
 
 ```
 usage: install [-h] {ninja,gcc,meson,qemu,binutils,all} ...
