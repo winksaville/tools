@@ -23,6 +23,7 @@ from __future__ import print_function
 import os
 import sys
 import posixpath
+import re
 import runpy
 import subprocess
 import tempfile
@@ -78,6 +79,9 @@ class CompletedProcess(object):
       parts.append(('stderr', self.stderr))
     content = ', '.join('{0}={1!r}'.format(*x) for x in parts)
     return 'CompletedProcess({0})'.format(content)
+  @property
+  def output(self):
+    return self.stdout
   def check_returncode(self):
     if self.returncode != 0:
       raise CalledProcessError(self.returncode, self.args, self.stdout, self.stderr)
@@ -200,7 +204,11 @@ def download_extract(url, directory, temp=None, strip_components=0):
     if not temp or not os.path.isfile(temp_fn):
       print("  Downloading", url)
       try:
-        run(['wget', '--timeout=20', '-qO-', url, '--show-progress', safe('>'), temp_fn], shell=True)
+        cmd = ['wget', '--timeout=20', '-qO-', url, safe('>'), temp_fn]
+        if wget_version() >= '1.16.1':
+          cmd.insert(4, '--show-progress')
+        print(cmd)
+        run(cmd, shell=True)
       except BaseException as exc:
         # We delete the file if anything happened while downloading it.
         os.remove(temp_fn)
@@ -214,6 +222,17 @@ def download_extract(url, directory, temp=None, strip_components=0):
       # Only delete the downloaded file if its a "system" temporary file
       # and was not downloaded to an explicit temporary directory.
       os.remove(temp_fn)
+
+def wget_version():
+  ''' Returns the version number of WGet. '''
+
+  if not hasattr(wget_version, '_version'):
+    output = run(['wget', '-V'], piped=True).output
+    version = re.search('WGet\s+([\d\.]+)', output, re.I)
+    if not version:
+      raise RuntimeError('could not determine WGet version')
+    wget_version._version = version.group(1)
+  return wget_version._version
 
 def ensure_venv(directory, python_bin='python'):
   ''' Ensures that a virtual environment at *directory* exists. If it
