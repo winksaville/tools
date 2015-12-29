@@ -1,0 +1,17 @@
+#!/bin/bash
+
+_travis_wait() {
+  echo "[.travis-wait]: Started (120s interval)"
+  while true; do
+    sleep 120
+    echo "[.travis-wait]: ."
+  done
+}
+
+_travis_wait &
+TRAVIS_WAIT_PID=$!
+
+$*
+
+kill $TRAVIS_WAIT_PID
+echo "[.travis-wait]: Killed"
