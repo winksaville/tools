@@ -11,14 +11,33 @@ addons:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - gcc-5 # Needed for Posix Platform
-      - texinfo # needed by binutils-gdb
-      - libgmp-dev # needed by gcc
-      - libmpfr-dev # needed by gcc
-      - libmpc-dev # needed by gcc
-      - re2c # Needed by ninja
-      - realpath # Needed by my test.sh script
-        #- qemu-system-arm  # Doesn't install!!
+      # required by crosstool-ng
+      - gawk
+      - bison
+      - flex
+      - gpref
+      - cvs
+      - texinfo
+      - automake
+      - autoconf
+      - libtool
+      - ncurses-dev
+      - g++
+      - subversion
+      - python-dev
+      - libexpat1-dev
+      - cmake
+      - help2man
+      # required for posix platform
+      - gcc-5
+      # required by binutils-gdb
+      - texinfo
+      # required by gcc
+      - libgmp-dev
+      - libmpfr-dev
+      - libmpc-dev
+      # required by ninja
+      - re2c
 
 script:
   - ./.travis-wait ./install all --gcc:silent

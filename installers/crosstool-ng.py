@@ -18,13 +18,42 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+import os
+import shutil
 import installlib
 
-installlib.register('ninja', 'installers/ninja.py', version='1.6.0')
-installlib.register('meson', 'installers/meson.py', version='0.27.0')
-installlib.register('qemu', 'installers/qemu.py', version='2.4.91', co_version='2.5.0-rc1')
-installlib.register('binutils', 'installers/binutils.py', version='2.25.1', cross_dir='cross', target='arm-eabi')
-installlib.register('gcc', 'installers/gcc.py', version='5.2.0', cross_dir='cross', target='arm-eabi',
-  gmp_version='6.0.0a', mpfr_version='3.1.3', mpc_version='1.0.3')
-installlib.register('craftr', 'installers/craftr.py', version='master', min_version='0.20.0')
-installlib.register('crosstool-ng', 'installers/crosstool-ng.py', version='1.22.0')
+GIT_URL = 'git@github.com:crosstool-ng/crosstool-ng.git'
+
+
+def main():
+  dst_dir = os.path.join(settings['prefix'], 'bin')
+  code_dir = os.path.join(settings['temp'], 'crosstools-ng')
+
+  try:
+    app = os.path.join(dst_dir, 'ct-ng')
+    output = installlib.run([app, 'version']).output
+  except OSError as exc:
+    output = None
+
+  if output and settings['version'] in output:
+    print('crosstools-ng {0} already installed'.format(settings['version']))
+    if not settings['force_install']:
+      return
+
+  print('installing crosstools-ng {0} ...'.format(settings['version']))
+  if output:
+    print('note: existing installation of crosstools-ng will be overwritten')
+
+  shutil.rmtree(code_dir, ignore_errors=True)
+  branch = 'crosstool-ng-' + settings['version']
+  installlib.git_clone(GIT_URL, code_dir, branch=branch, depth=5)
+
+  os.chdir(code_dir)
+  installlib.run(['./bootstrap'])
+  installlib.run(['./configure', '--enable-local', '--prefix=' + settings['prefix']])
+  installlib.run(['make'])
+  installlib.run(['make', 'install'])
+
+
+if __name__ == '__main__':
+  main()
