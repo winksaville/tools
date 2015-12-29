@@ -46,7 +46,11 @@ def main():
   mpc_path = os.path.join(tmp_dir, 'mpc')
 
   try:
-    app = os.path.join(dst_dir, 'gcc')
+    if settings['target']:
+      app = settings['target'] + '-gcc'
+    else:
+      app = 'gcc'
+    app = os.path.join(dst_dir, app)
     output = installlib.run_piped([app, '--version']).stdout
   except OSError as exc:
     output = None
