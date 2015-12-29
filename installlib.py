@@ -227,8 +227,8 @@ def main():
   parser.add_argument('options', nargs='...', help=''
     'Additional options to be passed to the installers, must be '
     'prefixed with --. Standard options are --prefix=~/opt, --temp=~/temp, '
-    '--force-install and --dry. You can specify an option for a specific '
-    'installer by prefixing the tool name like --gcc:version=5.2.0 .')
+    '--force-install=false and --dry=false. You can specify an option for a '
+    'specific installer by prefixing the tool name like --gcc:version=5.2.0 .')
 
   args = parser.parse_args()
   cwd = os.getcwd()
@@ -244,6 +244,10 @@ def main():
       parser.error('invalid option {0!r}'.format(option))
     if not sep:
       value = True
+    elif value.lower() == 'true':
+      value = True
+    elif value.lower() == 'false':
+      value = False
     key = key.replace('-', '_')
     if ':' in key:
       tool_name, _, sub_key = key.partition(':')
