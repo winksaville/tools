@@ -98,7 +98,8 @@ def run(command, *args, **kwargs):
     result.check_returncode()
   return result
 
-def run_piped(command, *args, merge=True, **kwargs):
+def run_piped(command, *args, **kwargs):
+  merge = kwargs.pop('merge', True)
   stderr = subprocess.STDOUT if merge else subprocess.PIPE
   return run(command, *args, stdout=subprocess.PIPE, stderr=stderr, **kwargs)
 
