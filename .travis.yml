@@ -1,0 +1,23 @@
+language: python
+python:
+  - 3.4
+  - 3.5
+  - nightly
+
+sudo: false
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-5 # Needed for Posix Platform
+      - texinfo # needed by binutils-gdb
+      - libgmp-dev # needed by gcc
+      - libmpfr-dev # needed by gcc
+      - libmpc-dev # needed by gcc
+      - re2c # Needed by ninja
+      - realpath # Needed by my test.sh script
+        #- qemu-system-arm  # Doesn't install!!
+
+script:
+  - ./install all
