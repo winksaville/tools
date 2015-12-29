@@ -151,32 +151,20 @@ def git_clone(url, directory=None, branch=None, depth=None, recursive=True, **kw
   command += ['--recursive'] if recursive else []
   return run(command, **kwargs)
 
-def download_extract(url, directory):
-  ''' Downloads the file at the specified *url* and expects it to be an
-  archive. The archive will be extracted to the *directory*. Supported
-  archive formats are tar.gz, tar.xz and zip. '''
+def download_extract(url, directory, strip_components=0):
+  ''' Downloads the file at the specified *url* using wget and
+  extracts its contents using tar, stripping the number of specified
+  components. '''
 
-  if url.endswith('.tar.gz'):
-    factory = lambda fn: tarfile.open(fn, 'r:gz')
-  if url.endswith('.tar.xz'):
-    factory = lambda fn: tarfile.open(fn, 'r:xz')
-  elif url.endswith('.zip'):
-    factory = lambda fn: zipfile.open(fn, 'r')
-  else:
-    raise ValueError('download_extract() unsupported archive', url)
-
-  chunksize = 4096
+  makedirs(directory)
   with tempfile.NamedTemporaryFile(delete=False) as dst:
-    with urlopen(url) as src:
-      while True:
-        data = src.read(chunksize)
-        if data:
-          dst.write(data)
-        else:
-          break
     dst.close()
     try:
-      factory(dst.name).extractall(directory)
+      print("  Downloading", url)
+      run(['wget', '--timeout=20', '-qO-', url, safe('>'), dst.name], shell=True)
+      print("  Extracting to", directory)
+      run(['tar', '-xf', dst.name, '--strip-components=%d' % strip_components,
+        '-C', directory])
     finally:
       os.remove(dst.name)
 
