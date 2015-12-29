@@ -21,4 +21,4 @@ addons:
         #- qemu-system-arm  # Doesn't install!!
 
 script:
-  - ./install all
+  - ./install all --gcc:silent
