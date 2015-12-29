@@ -51,6 +51,9 @@ def main():
   if output:
     print('note: existing installation of {1} {0} will be removed'.format(APP, settings['version']))
 
+  if settings['dry']:
+    return
+
   code_dir = os.path.join(settings['temp'], APP)
   branch = 'binutils-{0}'.format(settings['version'].replace('.', '_'))
   shutil.rmtree(code_dir, ignore_errors=True)

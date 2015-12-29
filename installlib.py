@@ -224,18 +224,47 @@ def main():
 
   parser = argparse.ArgumentParser()
   parser.add_argument('target', choices=choices)
-  parser.add_argument('--prefix', default='~/opt')
-  parser.add_argument('--temp', default='~/tmp')
-  parser.add_argument('--force', action='store_true')
+  parser.add_argument('options', nargs='...', help=''
+    'Additional options to be passed to the installers, must be '
+    'prefixed with --. Standard options are --prefix=~/opt, --temp=~/temp, '
+    '--force-install and --dry. You can specify an option for a specific '
+    'installer by prefixing the tool name like --gcc:version=5.2.0 .')
+
   args = parser.parse_args()
-  args.prefix = os.path.abspath(os.path.expanduser(args.prefix))
-  args.temp = os.path.abspath(os.path.expanduser(args.temp))
   cwd = os.getcwd()
 
-  settings = {'prefix': args.prefix, 'temp': args.temp, 'force_install': args.force}
-  if args.target == 'all':
-    for name in sorted(installers):
-      install(name, **settings)
-      os.chdir(cwd)
-  else:
-    install(args.target, **settings)
+  # Parse additional options.
+  options = {}
+  tool_options = {}
+  for option in args.options:
+    if not option.startswith('--'):
+      parser.error('additional options must start with --')
+    key, sep, value = option[2:].partition('=')
+    if not key:
+      parser.error('invalid option {0!r}'.format(option))
+    if not sep:
+      value = True
+    key = key.replace('-', '_')
+    if ':' in key:
+      tool_name, _, sub_key = key.partition(':')
+      if not sub_key:
+        parser.error('invalid option {0!r}'.format(option))
+      if tool_name not in choices:
+        parser.error('unknown tool {0!r} in option {1!r}'.format(tool_name, option))
+      tool_options.setdefault(tool_name, {})[sub_key] = value
+    else:
+      options[key] = value
+
+  options.setdefault('prefix', os.path.expanduser('~/opt'))
+  options.setdefault('temp', os.path.expanduser('~/tmp'))
+  options.setdefault('force_install', False)
+  options.setdefault('dry', False)
+
+  tools = [args.target] if args.target != 'all' else sorted(installers)
+  for name in sorted(installers):
+    curr_options = options.copy()
+    curr_options.update(tool_options.get(name, {}))
+    if curr_options['dry']:
+      print('note: dry installation of', name)
+    install(name, **curr_options)
+    os.chdir(cwd)

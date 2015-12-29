@@ -47,6 +47,9 @@ def main():
   if output:
     print('note: existing installation of {0} will be overwritten'.format(APP, settings['version']))
 
+  if settings['dry']:
+    return
+
   code_dir = os.path.join(settings['temp'], APP)
   branch = 'v{0}'.format(settings['co_version'])
   shutil.rmtree(code_dir, ignore_errors=True)

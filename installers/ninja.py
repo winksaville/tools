@@ -42,6 +42,9 @@ def main():
   if output:
     print('note: existing installation of ninja will be overwritten')
 
+  if settings['dry']:
+    return
+
   code_dir = os.path.join(settings['temp'], 'ninja')
   branch = 'v{0}'.format(settings['version'])
   shutil.rmtree(code_dir, ignore_errors=True)

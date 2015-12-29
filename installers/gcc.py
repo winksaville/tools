@@ -58,6 +58,9 @@ def main():
   if output:
     print('existing installation of gcc will be overwritten')
 
+  if settings['dry']:
+    return
+
   shutil.rmtree(tmp_dir, ignore_errors=True)
 
   url = GCC_URL.format(settings['version'])

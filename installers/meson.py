@@ -41,6 +41,9 @@ def main():
   if output:
     print('note: existing installation of meson will be overwriteten')
 
+  if settings['dry']:
+    return
+
   code_dir = os.path.join(settings['temp'], 'meson')
   branch = settings['version']
   shutil.rmtree(code_dir, ignore_errors=True)
