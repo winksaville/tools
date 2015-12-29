@@ -6,18 +6,19 @@ This repository contains scripts to install the following packages
 as a cross-compiling toolset.
 
 - binutils
+- [craft](https://github.com/craftr-build/craftr)
 - gcc
-- meson
-- ninja
+- [meson](https://github.com/mesonbuild/meson)
+- [ninja](https://github.com/ninja-build/ninja)
 - qemu
 
 __Command Line Interface__
 
 ```
-usage: install [-h] {ninja,gcc,meson,qemu,binutils,all} ...
+usage: install [-h] {gcc,craftr,ninja,meson,qemu,binutils,all} ...
 
 positional arguments:
-  {ninja,gcc,meson,qemu,binutils,all}
+  {gcc,craftr,ninja,meson,qemu,binutils,all}
   options               Additional options to be passed to the installers,
                         must be prefixed with --. Standard options are
                         --prefix=~/opt, --temp=~/temp, --force-install=false
