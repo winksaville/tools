@@ -45,7 +45,7 @@ def main():
 
   print('installing {0} {1} ...'.format(APP, settings['version']))
   if output:
-    print('note: existing installation of {1} {0} will be removed'.format(APP, settings['version']))
+    print('note: existing installation of {0} will be overwritten'.format(APP, settings['version']))
 
   code_dir = os.path.join(settings['temp'], APP)
   branch = 'v{0}'.format(settings['co_version'])

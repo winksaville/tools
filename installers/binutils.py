@@ -55,7 +55,7 @@ def main():
   code_dir = os.path.join(settings['temp'], APP)
   branch = 'binutils-{0}'.format(settings['version'].replace('.', '_'))
   shutil.rmtree(code_dir, ignore_errors=True)
-  installlib.git_clone(GIT_URL, code_dir, branch=branch, depth=1)
+  installlib.git_clone(GIT_URL, code_dir, branch=branch, depth=5)
   os.chdir(code_dir)
 
   installlib.makedirs('build')

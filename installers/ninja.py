@@ -40,7 +40,7 @@ def main():
 
   print('installing ninja {0} ...'.format(settings['version']))
   if output:
-    print('note: existing installation of ninja {0} will be removed'.format(output.strip()))
+    print('note: existing installation of ninja will be overwritten')
 
   code_dir = os.path.join(settings['temp'], 'ninja')
   branch = 'v{0}'.format(settings['version'])

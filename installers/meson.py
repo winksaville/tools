@@ -39,7 +39,7 @@ def main():
 
   print('installing meson {0} ...'.format(settings['version']))
   if output:
-    print('note: existing installation of meson {0} will be removed'.format(settings['version']))
+    print('note: existing installation of meson will be overwriteten')
 
   code_dir = os.path.join(settings['temp'], 'meson')
   branch = settings['version']
