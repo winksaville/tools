@@ -57,7 +57,7 @@ def main():
   installlib.makedirs('build')
   os.chdir('build')
   installlib.run(['../configure', '--prefix={0}'.format(settings['prefix']),
-    '--target-list=arm-softmmu,arm-linux-user'])
+    '--target-list=arm-softmmu,arm-linux-user', '--python=python2'])
   installlib.run(['make', '-j', str(cpu_count())])
   installlib.run(['make', 'install'])
 
