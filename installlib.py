@@ -288,7 +288,7 @@ def main():
   choices.append('all')
 
   parser = argparse.ArgumentParser()
-  parser.add_argument('target', choices=choices)
+  parser.add_argument('targets', nargs='+', choices=choices, metavar='TOOL')
   parser.add_argument('options', nargs='...', help=''
     'Additional options to be passed to the installers, must be '
     'prefixed with --. Standard options are --prefix=~/opt, --temp=~/temp, '
@@ -329,7 +329,10 @@ def main():
   options.setdefault('force_install', False)
   options.setdefault('dry', False)
 
-  tools = [args.target] if args.target != 'all' else sorted(installers)
+  if args.targets == ['all']:
+    tools = sorted(installers)
+  else:
+    tools = args.targets
   for name in tools:
     curr_options = options.copy()
     curr_options.update(tool_options.get(name, {}))
