@@ -20,7 +20,7 @@ addons:
       - texinfo
       - automake
       - autoconf
-      - libtool
+      - libtool-bin
       - ncurses-dev
       - g++
       - subversion

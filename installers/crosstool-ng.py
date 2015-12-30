@@ -50,7 +50,7 @@ def main():
 
   os.chdir(code_dir)
   installlib.run(['./bootstrap'])
-  installlib.run(['./configure', '--enable-local', '--prefix=' + settings['prefix']])
+  installlib.run(['./configure', '--prefix=' + settings['prefix']])
   installlib.run(['make'])
   installlib.run(['make', 'install'])
 
