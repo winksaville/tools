@@ -254,7 +254,7 @@ def makedirs(dirname):
 
 installers = {}
 
-def register(name, script, deps=(), default_install=False, **settings):
+def register(name, script, deps=(), default_install=True, **settings):
   ''' Register an installer script. '''
 
   installers[name] = {
@@ -354,7 +354,7 @@ def main():
   session.options.setdefault('dry', False)
 
   if args.targets == ['all']:
-    tools = sorted(x[0] for x in installers.items() if x['default_installation'])
+    tools = sorted(x[0] for x in installers.items() if x[1]['default_install'])
   else:
     tools = args.targets
   for name in tools:
