@@ -17,42 +17,42 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+#
+# Options:
+# - target (required)
+# - no_menuconfig (optional, False)
+# - reconfig (optional, False)
 
 import os
-import shutil
 import installlib
-
-GIT_URL = 'git@github.com:crosstool-ng/crosstool-ng.git'
+import shutil
 
 
 def main():
-  dst_dir = os.path.join(settings['prefix'], 'bin')
-  code_dir = os.path.join(settings['temp'], 'crosstool-ng')
+  target = settings.get('target')
+  if not target:
+    print('error: ct-ng-install:target not specified.')
+    return 1
 
-  try:
-    app = os.path.join(dst_dir, 'ct-ng')
-    output = installlib.run_piped([app, 'version']).output
-  except OSError as exc:
-    output = None
+  no_menuconfig = settings.get('no_menuconfig', False)
+  reconfig = settings.get('reconfig', False)
+  dst_dir = os.path.join(settings['prefix'], 'cross', target)
+  cfg_file = os.path.join(dst_dir, '.config')
+  if not os.path.exists(cfg_file) or reconfig:
+    if no_menuconfig:
+      print('error: configuration file {0!r} does not exist'.format(config_file))
+      return 1
+    # xxx: should we always flush the original configuration?
+    shutil.rmtree(dst_dir, ignore_errors=True)
+    installlib.makedirs(dst_dir)
+    installlib.run(['ct-ng', 'menuconfig'], stderr=installlib.PIPE, cwd=dst_dir)
+    if not os.path.isfile(cfg_file):
+      print('error: ct-ng menuconfig did not save a .config file')
+      return 1
 
-  if output and settings['version'] in output:
-    print('crosstools-ng {0} already installed'.format(settings['version']))
-    if not settings['force_install']:
-      return
-
-  print('installing crosstools-ng {0} ...'.format(settings['version']))
-  if output:
-    print('note: existing installation of crosstools-ng will be overwritten')
-
-  shutil.rmtree(code_dir, ignore_errors=True)
-  branch = 'crosstool-ng-' + settings['version']
-  installlib.git_clone(GIT_URL, code_dir, branch=branch, depth=5)
-
-  os.chdir(code_dir)
-  installlib.run(['./bootstrap'])
-  installlib.run(['./configure', '--prefix=' + settings['prefix']])
-  installlib.run(['make'])
-  installlib.run(['make', 'install'])
+  print('installing {0} with crosstool-ng to {1!r}'.format(target, dst_dir))
+  os.chdir(dst_dir)
+  installlib.run(['ct-ng', 'build.4'])
 
 
 if __name__ == '__main__':

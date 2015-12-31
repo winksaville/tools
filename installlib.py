@@ -31,6 +31,8 @@ import traceback
 import tarfile
 import zipfile
 
+from subprocess import STDOUT, PIPE
+
 string_type = (str if sys.version_info[0] == 3 else basestring)
 
 try:

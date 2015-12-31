@@ -29,3 +29,4 @@ installlib.register('gcc', 'installers/gcc.py', version='5.2.0', cross_dir='cros
   gmp_version='6.0.0a', mpfr_version='3.1.3', mpc_version='1.0.3')
 installlib.register('craftr', 'installers/craftr.py', version='master', min_version='0.20.0')
 installlib.register('ct-ng', 'installers/ct-ng.py', version='1.22.0')
+installlib.register('ct-ng-install', 'installers/ct-ng-install.py', deps=['ct-ng'])
