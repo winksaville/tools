@@ -41,5 +41,5 @@ addons:
 
 script:
   - ./.travis/wait ./install all --gcc:silent --prefix=$HOME/opt
-  - PATH=$HOME/opt/bin ./.travis/wait ./install cg-nt-install --target=arm-eabi --prefix=.travis/
+  - PATH=$HOME/opt/bin ./.travis/wait ./install cg-nt-install --target=arm-eabi --ct-ng-install:prefix=.travis/
 
