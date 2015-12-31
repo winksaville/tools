@@ -39,7 +39,10 @@ addons:
       # required by ninja
       - re2c
 
-script:
-  - ./.travis/wait ./install all --gcc:silent --prefix=$HOME/opt
-  - PATH=$HOME/opt/bin ./.travis/wait ./install cg-nt-install --target=arm-eabi --ct-ng-install:prefix=.travis/
+before_script:
+  - export INSTALL_PREFIX=$HOME/opt
+  - export PATH=${INSTALL_PREFIX}/bin:$PATH
 
+script:
+  - ./.travis/wait ./install all --gcc:silent --prefix=${INSTALL_PREFIX}
+  - ./.travis/wait ./install cg-nt-install --ct-ng-install:target=arm-eabi --ct-ng-install:prefix=.travis/

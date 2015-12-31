@@ -34,6 +34,8 @@ def main():
     print('error: ct-ng-install:target not specified.')
     return 1
 
+  # xxx: check if the toolset is already installed!
+
   no_menuconfig = settings.get('no_menuconfig', False)
   reconfig = settings.get('reconfig', False)
   dst_dir = os.path.join(settings['prefix'], 'cross', target)
