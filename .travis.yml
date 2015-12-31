@@ -40,4 +40,6 @@ addons:
       - re2c
 
 script:
-  - ./.travis-wait ./install all --gcc:silent
+  - ./.travis/wait ./install all --gcc:silent --prefix=$HOME/opt
+  - PATH=$HOME/opt/bin ./.travis/wait ./install cg-nt-install --target=arm-eabi --prefix=.travis/
+

@@ -336,15 +336,16 @@ def main():
       value = True
     elif value.lower() == 'false':
       value = False
-    key = key.replace('-', '_')
     if ':' in key:
       tool_name, _, sub_key = key.partition(':')
       if not sub_key:
         parser.error('invalid option {0!r}'.format(option))
       if tool_name not in choices:
         parser.error('unknown tool {0!r} in option {1!r}'.format(tool_name, option))
+      sub_key = sub_key.replace('-', '_')
       session.tool_options.setdefault(tool_name, {})[sub_key] = value
     else:
+      key = key.replace('-', '_')
       session.options[key] = value
 
   session.options.setdefault('prefix', os.path.expanduser('~/opt'))
