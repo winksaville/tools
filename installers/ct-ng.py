@@ -22,7 +22,7 @@ import os
 import shutil
 import installlib
 
-GIT_URL = 'git@github.com:crosstool-ng/crosstool-ng.git'
+GIT_URL = 'https://github.com/crosstool-ng/crosstool-ng.git'
 
 
 def main():
