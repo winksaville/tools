@@ -15,7 +15,7 @@ addons:
       - gawk
       - bison
       - flex
-      - gpref
+      - gperf
       - cvs
       - texinfo
       - automake
