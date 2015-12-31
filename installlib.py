@@ -27,6 +27,7 @@ import re
 import runpy
 import subprocess
 import tempfile
+import traceback
 import tarfile
 import zipfile
 
@@ -127,7 +128,7 @@ def run(command, **kwargs):
     if stdout:
       stdout = stdout.decode(encoding)
     if stderr:
-      stderr = stdout.decode(encoding)
+      stderr = stderr.decode(encoding)
   result = CompletedProcess(command, process.returncode, stdout, stderr)
   if check:
     result.check_returncode()
@@ -251,32 +252,53 @@ def makedirs(dirname):
 
 installers = {}
 
-def register(name, script, deps=(), **settings):
+def register(name, script, deps=(), default_install=False, **settings):
   ''' Register an installer script. '''
 
   installers[name] = {
     'script': script, 'settings': settings,
-    'deps': deps, 'installed': False
+    'deps': deps, 'default_install': default_install,
   }
 
-def install(name, required_by=None, **override_settings):
-  try:
-    installer = installers[name]
-  except KeyError:
-    message = 'no installer for {name!r} '
-    if required_by:
-      message += '(required by {req!r}) '
-    message += 'available'
-    raise ValueError(message.format(name=name, req=required_by))
+class InstallSession(object):
 
-  if installer['installed']:
-    return
-  installer['installed'] = True
-  for dep in installer['deps']:
-    install(dep, name)
-  settings  = installer['settings'].copy()
-  settings.update(override_settings)
-  runpy.run_path(installer['script'], {'settings': settings}, run_name='__main__')
+  def __init__(self):
+    self.options = {}
+    self.tool_options = {}
+    self.installed = set()
+
+  def install(self, name, required_by=None):
+    if name in self.installed:
+      return
+
+    try:
+      installer = installers[name]
+    except KeyError:
+      message = 'no installer for {name!r} '
+      if required_by:
+        message += '(required by {req!r}) '
+      message += 'available'
+      raise ValueError(message.format(name=name, req=required_by))
+
+    settings = installer['settings'].copy()
+    settings.update(self.options)
+    settings.update(self.tool_options.get(name, {}))
+
+    self.installed.add(name)
+    for dep in installer['deps']:
+      self.install(dep, name)
+
+    if settings.get('dry', False):
+      print('note: dry installation of', name)
+
+    try:
+      runpy.run_path(installer['script'], {'settings': settings}, run_name='__main__')
+    except SystemExit as exc:
+      raise
+    except BaseException as exc:
+      traceback.print_exc()
+      print('error installing {0}. quit'.format(name))
+      raise SystemExit(1)
 
 # ============================================================================
 # ============================================================================
@@ -299,8 +321,7 @@ def main():
   cwd = os.getcwd()
 
   # Parse additional options.
-  options = {}
-  tool_options = {}
+  session = InstallSession()
   for option in args.options:
     if not option.startswith('--'):
       parser.error('additional options must start with --')
@@ -320,23 +341,19 @@ def main():
         parser.error('invalid option {0!r}'.format(option))
       if tool_name not in choices:
         parser.error('unknown tool {0!r} in option {1!r}'.format(tool_name, option))
-      tool_options.setdefault(tool_name, {})[sub_key] = value
+      session.tool_options.setdefault(tool_name, {})[sub_key] = value
     else:
-      options[key] = value
+      session.options[key] = value
 
-  options.setdefault('prefix', os.path.expanduser('~/opt'))
-  options.setdefault('temp', os.path.expanduser('~/tmp'))
-  options.setdefault('force_install', False)
-  options.setdefault('dry', False)
+  session.options.setdefault('prefix', os.path.expanduser('~/opt'))
+  session.options.setdefault('temp', os.path.expanduser('~/tmp'))
+  session.options.setdefault('force_install', False)
+  session.options.setdefault('dry', False)
 
   if args.targets == ['all']:
-    tools = sorted(installers)
+    tools = sorted(x[0] for x in installers.items() if x['default_installation'])
   else:
     tools = args.targets
   for name in tools:
-    curr_options = options.copy()
-    curr_options.update(tool_options.get(name, {}))
-    if curr_options['dry']:
-      print('note: dry installation of', name)
-    install(name, **curr_options)
+    session.install(name)
     os.chdir(cwd)
