@@ -31,7 +31,7 @@ def main():
 
   try:
     app = os.path.join(dst_dir, 'ct-ng')
-    output = installlib.run([app, 'version']).output
+    output = installlib.run_piped([app, 'version']).output
   except OSError as exc:
     output = None
 

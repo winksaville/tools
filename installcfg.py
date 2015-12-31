@@ -28,4 +28,4 @@ installlib.register('binutils', 'installers/binutils.py', version='2.25.1', cros
 installlib.register('gcc', 'installers/gcc.py', version='5.2.0', cross_dir='cross', target='arm-eabi',
   gmp_version='6.0.0a', mpfr_version='3.1.3', mpc_version='1.0.3')
 installlib.register('craftr', 'installers/craftr.py', version='master', min_version='0.20.0')
-installlib.register('crosstool-ng', 'installers/crosstool-ng.py', version='1.22.0')
+installlib.register('ct-ng', 'installers/ct-ng.py', version='1.22.0')
