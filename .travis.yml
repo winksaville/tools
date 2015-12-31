@@ -45,4 +45,4 @@ before_script:
 
 script:
   - ./.travis/wait ./install all --gcc:silent --prefix=${INSTALL_PREFIX}
-  - ./.travis/wait ./install cg-nt-install --ct-ng-install:target=arm-eabi --ct-ng-install:prefix=.travis/
+  - ./.travis/wait ./install ct-ng-install --ct-ng-install:target=arm-eabi --ct-ng-install:prefix=.travis/
