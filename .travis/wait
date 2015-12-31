@@ -12,6 +12,9 @@ _travis_wait &
 TRAVIS_WAIT_PID=$!
 
 $*
+RESULT=$?
 
 kill $TRAVIS_WAIT_PID
 echo "[.travis-wait]: Killed"
+
+exit $RESULT
