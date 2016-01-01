@@ -1,12 +1,12 @@
 # Vendor Install Tools
 
-[![Build Status](https://travis-ci.org/NiklasRosenstein/vendor-install-tools.svg?branch=master)](https://travis-ci.org/NiklasRosenstein/vendor-install-tools)
+[![Build Status](https://travis-ci.org/winksaville/vendor-install-tools.svg?branch=NiklasRosenstein)](https://travis-ci.org/winksaville/vendor-install-tools)
 
 This repository contains scripts to install the following packages
 as a cross-compiling toolset.
 
 - binutils
-- [craft](https://github.com/craftr-build/craftr)
+- [craftr](https://github.com/craftr-build/craftr)
 - gcc
 - [meson](https://github.com/mesonbuild/meson)
 - [ninja](https://github.com/ninja-build/ninja)
