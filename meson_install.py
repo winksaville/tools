@@ -25,9 +25,9 @@ import shutil
 
 APP='meson'
 URL='https://github.com/mesonbuild/meson.git'
-DEFAULT_VER='0.28.0-research'
-#CHECKOUT=DEFAULT_VER
-CHECKOUT='master'
+DEFAULT_VER='0.28.0'
+CHECKOUT=DEFAULT_VER
+#CHECKOUT='master'
 
 class Installer:
     '''Installer for meson.'''
