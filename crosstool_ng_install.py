@@ -25,7 +25,9 @@ import shutil
 
 APP='ct-ng'
 URL = 'git@github.com:crosstool-ng/crosstool-ng.git'
-DEFAULT_VER='1.22.0'
+#DEFAULT_VER='1.22.0'
+CHECKOUT_SHA1=True
+DEFAULT_VER='99cf467' # SHA1 of Master as of 2016-01-13
 
 class Installer:
     '''Installer for crosstool-ng.'''
@@ -63,7 +65,11 @@ class Installer:
 
             utils.git('clone', [URL, code_dir])
             os.chdir(code_dir)
-            utils.git('checkout', ['crosstool-ng-{}'.format(self.args.ver)])
+            if CHECKOUT_SHA1:
+              checkout_ver = self.args.ver
+            else:
+              checkout_ver = 'crosstool-ng-{}'.format(self.args.ver)
+            utils.git('checkout', [checkout_ver])
 
             subprocess.check_call(['./bootstrap'])
             subprocess.check_call(['./configure', '--prefix={}'.format(self.args.installPrefixDir)])
