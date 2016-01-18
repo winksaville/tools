@@ -19,8 +19,9 @@ usage: install.py [-h] [--forceInstall] [--codePrefixDir [CODEPREFIXDIR]]
 
 positional arguments:
   apps                  Apps to install, "all" or one or more in the list:
-                        ['ninja', 'meson', 'binutils-arm-eabi', 'gcc-arm-
-                        eabi', 'qemu-system-arm']
+                        ['ninja', 'meson', 'ct-ng',
+                         'gcc-x86_64', 'gcc-i386','gcc-arm',
+                         'qemu-system-arm']
 
 optional arguments:
   -h, --help            show this help message and exit
