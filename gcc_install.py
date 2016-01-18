@@ -25,7 +25,7 @@ import subprocess
 import sys
 import traceback
 
-DEFAULT_VER='5.2.0'
+DEFAULT_VER='5.3.0'
 APP='gcc'
 AN_APP='gcc'
 DEFAULT_CROSS_DIR='cross'

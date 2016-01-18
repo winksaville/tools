@@ -24,7 +24,7 @@ import traceback
 import shutil
 
 DEFAULT_CROSS_DIR='x-tools'
-GCC_VER='5.2.0'
+GCC_VER='5.3.0'
 BINU_VER='2.25.1'
 DEFAULT_VER=GCC_VER
 AN_APP='gcc'
@@ -87,7 +87,7 @@ class Builder:
             shutil.copy2(src, dst)
             os.chdir(code_dir)
 
-            # Builds and isntall app's
+            # Build and install app's
             subprocess.check_call(['ct-ng', 'build.4'])
 
         return retval
