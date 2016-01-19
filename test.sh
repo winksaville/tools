@@ -83,7 +83,7 @@ test_installed () {
   [[ ${actualVer} != *"${expectedVer}"* ]] && \
     printf "$1 BAD version reported:\n-----\n${actualVer}\n-----\nBut expected ${expectedVer}\n" && exit 1
 
-  echo $1 OK
+  echo $1 OK "ver=${expectedVer}"
 }
 
 
@@ -95,7 +95,7 @@ test_all () {
   #test_installed arm-eabi-gdb "--version" "${THIS_DIR}/binutils_install.py printGdbVer"
   #test_installed arm-eabi-gcc "--version" "${THIS_DIR}/gcc_install.py printVer"
   test_installed x86_64-unknown-elf-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
-  test_installed x86_64-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccVer"
+  test_installed x86_64-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccX86_64_Ver"
   test_installed i386-unknown-elf-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
   test_installed i386-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccVer"
   test_installed arm-unknown-eabi-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
@@ -222,7 +222,7 @@ case $1 in
    test_installed x86_64-unknown-elf-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
    ;;
 "x86_64-unknown-elf-gcc")
-   test_installed x86_64-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccVer"
+   test_installed x86_64-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccX86_64_Ver"
    ;;
 "i386-unknown-elf-ld")
    test_installed i386-unknown-elf-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
