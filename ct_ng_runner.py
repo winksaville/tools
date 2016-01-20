@@ -93,9 +93,9 @@ class Builder:
                 gcc_path = os.path.expanduser(os.path.join('~/prgs', 'ct-ng-gcc'))
                 shutil.rmtree(gcc_path, ignore_errors=True)
                 print('gcc_install: gcc_path=', gcc_path)
-                utils.git('clone', [GCC_GIT_REPO_URL, gcc_path])
+                utils.git('clone', [GCC_GIT_REPO_URL, gcc_path, '--depth', '1', '--single-branch',
+                    '--branch', CHECKOUT_LABEL])
                 os.chdir(gcc_path)
-                utils.git('checkout', [CHECKOUT_LABEL])
                 
             thisDir = os.path.dirname(os.path.realpath(__file__))
             src = os.path.abspath('{}/config.{}'.format(thisDir, self.args.target))
