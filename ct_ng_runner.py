@@ -25,7 +25,7 @@ import shutil
 
 DEFAULT_CROSS_DIR='x-tools'
 GCC_VER='5.3.0'
-GCC_X86_64_VER='5.3.1-wink-intr-attr'
+GCC_X86_64_VER='5.3.1-wink-intr-attr-2'
 X86_64_TARGET='x86_64-unknown-elf'
 BINU_VER='2.25.1'
 DEFAULT_VER=GCC_VER
