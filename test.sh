@@ -95,9 +95,9 @@ test_all () {
   #test_installed arm-eabi-gdb "--version" "${THIS_DIR}/binutils_install.py printGdbVer"
   #test_installed arm-eabi-gcc "--version" "${THIS_DIR}/gcc_install.py printVer"
   test_installed x86_64-unknown-elf-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
-  test_installed x86_64-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccX86_64_Ver"
+  test_installed x86_64-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccIntrAttrVer"
   test_installed i386-unknown-elf-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
-  test_installed i386-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccVer"
+  test_installed i386-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccIntrAttrVer"
   test_installed arm-unknown-eabi-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
   test_installed arm-unknown-eabi-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccVer"
   test_installed qemu-system-arm "--version" "${THIS_DIR}/qemu_install.py printVer"
@@ -222,19 +222,19 @@ case $1 in
    test_installed x86_64-unknown-elf-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
    ;;
 "x86_64-unknown-elf-gcc")
-   test_installed x86_64-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccX86_64_Ver"
+   test_installed x86_64-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccIntrAttrVer"
    ;;
 "i386-unknown-elf-ld")
    test_installed i386-unknown-elf-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
    ;;
 "i386-unknown-elf-gcc")
-   test_installed i386-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccVer"
+   test_installed i386-unknown-elf-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccIntrAttrVer"
    ;;
 "arm-unknown-eabi-ld")
    test_installed arm-unknown-eabi-ld "--version" "${THIS_DIR}/ct_ng_runner.py printBinuVer"
    ;;
-"i386-unknown-elf-gcc")
-   test_installed arm-unknown-eabi-gcc "--version" "${THIS_DIR}/ct_ng_runner.py printGccVer"
+"arm-unknown-eabi-gcc")
+   test_installed arm-unknown-eabi-ld "--version" "${THIS_DIR}/ct_ng_runner.py printGccVer"
    ;;
 *)
   help

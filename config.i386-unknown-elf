@@ -13,7 +13,8 @@ CT_MODULES=y
 # crosstool-NG behavior
 #
 # CT_OBSOLETE is not set
-# CT_EXPERIMENTAL is not set
+CT_EXPERIMENTAL=y
+# CT_ALLOW_BUILD_AS_ROOT is not set
 # CT_DEBUG_CT is not set
 
 #
@@ -106,6 +107,7 @@ CT_TARGET_LDFLAGS=""
 # CT_ARCH_arm is not set
 # CT_ARCH_avr is not set
 # CT_ARCH_m68k is not set
+# CT_ARCH_microblaze is not set
 # CT_ARCH_mips is not set
 # CT_ARCH_nios2 is not set
 # CT_ARCH_powerpc is not set
@@ -166,7 +168,9 @@ CT_TARGET_ALIAS="i386-elf"
 #
 # Toolchain type
 #
+# CT_NATIVE is not set
 CT_CROSS=y
+# CT_CROSS_NATIVE is not set
 # CT_CANADIAN is not set
 CT_TOOLCHAIN_TYPE="cross"
 
@@ -189,6 +193,7 @@ CT_BARE_METAL=y
 CT_KERNEL="bare-metal"
 CT_KERNEL_bare_metal=y
 # CT_KERNEL_linux is not set
+# CT_KERNEL_windows is not set
 CT_KERNEL_bare_metal_AVAILABLE=y
 CT_KERNEL_linux_AVAILABLE=y
 CT_KERNEL_windows_AVAILABLE=y
@@ -207,6 +212,7 @@ CT_BINUTILS_binutils=y
 #
 # GNU binutils
 #
+# CT_BINUTILS_CUSTOM is not set
 CT_BINUTILS_VERSION="2.25.1"
 # CT_CC_BINUTILS_SHOW_LINARO is not set
 CT_BINUTILS_V_2_25_1=y
@@ -250,15 +256,17 @@ CT_LIBC_uClibc_AVAILABLE=y
 #
 CT_CC="gcc"
 CT_CC_gcc=y
-CT_CC_GCC_VERSION="5.3.0"
-# CT_CC_GCC_SHOW_LINARO is not set
-CT_CC_GCC_V_5_3_0=y
+CT_CC_GCC_CUSTOM=y
+CT_CC_GCC_CUSTOM_LOCATION="${HOME}/prgs/ct-ng-gcc"
+CT_CC_GCC_CUSTOM_VERSION="5.3.1-wink-intr-attr"
+CT_CC_GCC_VERSION="5.3.1-wink-intr-attr"
+# CT_CC_GCC_V_5_3_0 is not set
 # CT_CC_GCC_V_4_9_3 is not set
 # CT_CC_GCC_V_4_8_5 is not set
 CT_CC_GCC_4_8_or_later=y
 CT_CC_GCC_4_9_or_later=y
-CT_CC_GCC_5=y
 CT_CC_GCC_5_or_later=y
+CT_CC_GCC_latest=y
 CT_CC_GCC_HAS_GRAPHITE=y
 CT_CC_GCC_USE_GRAPHITE=y
 CT_CC_GCC_HAS_LTO=y
@@ -312,12 +320,12 @@ CT_CC_SUPPORT_JAVA=y
 CT_CC_SUPPORT_ADA=y
 CT_CC_SUPPORT_OBJC=y
 CT_CC_SUPPORT_OBJCXX=y
-CT_CC_SUPPORT_GOLANG=y
 
 #
 # Additional supported languages:
 #
 # CT_CC_LANG_CXX is not set
+CT_CC_LANG_OTHERS=""
 
 #
 # Debug facilities
@@ -394,3 +402,8 @@ CT_COMPLIBS_CHECK=y
 # READ HELP before you say 'Y' below !!!
 #
 # CT_COMP_TOOLS is not set
+
+#
+# Test suite
+#
+# CT_TEST_SUITE_GCC is not set

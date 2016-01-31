@@ -25,8 +25,9 @@ import shutil
 
 DEFAULT_CROSS_DIR='x-tools'
 GCC_VER='5.3.0'
-GCC_X86_64_VER='5.3.1-wink-intr-attr-2'
+GCC_INTR_ATTR_VER='5.3.1-wink-intr-attr-3'
 X86_64_TARGET='x86_64-unknown-elf'
+I386_TARGET='i386-unknown-elf'
 BINU_VER='2.25.1'
 DEFAULT_VER=GCC_VER
 AN_APP='gcc'
@@ -45,8 +46,9 @@ class Builder:
             extraFlags = ''
         self.extraFlags = extraFlags
         app = AN_APP
-        if (defaultVer is DEFAULT_VER) and (defaultTarget == X86_64_TARGET):
-            defaultVer=GCC_X86_64_VER
+        if (((defaultVer is DEFAULT_VER) and (defaultTarget == X86_64_TARGET))
+            or ((defaultVer is DEFAULT_VER) and (defaultTarget == I386_TARGET))):
+            defaultVer=GCC_INTR_ATTR_VER
         self.args = parseinstallargs.InstallArgs(app, defaultVer,
                 defaultCodePrefixDir,
                 defaultInstallPrefixDir,
@@ -87,7 +89,7 @@ class Builder:
                 shutil.rmtree(code_dir, ignore_errors=True)
             os.makedirs(code_dir)
 
-            if self.args.target == X86_64_TARGET:
+            if self.args.target == X86_64_TARGET or self.args.target == I386_TARGET:
                 # Get gcc from git which supports attribute(interrupt)
                 # gcc_path must match GCC_CUSTOM_LOCATION in config.x86_64-unknown-elf
                 gcc_path = os.path.expanduser(os.path.join('~/prgs', 'ct-ng-gcc'))
@@ -117,8 +119,8 @@ if __name__ == '__main__':
             print(BINU_VER)
         elif sys.argv[1] == 'printGccVer':
             print(GCC_VER)
-        elif sys.argv[1] == 'printGccX86_64_Ver':
-            print(GCC_X86_64_VER)
+        elif sys.argv[1] == 'printGccIntrAttrVer':
+            print(GCC_INTR_ATTR_VER)
         else:
             print("WAIT '{}' is bad parameter to ct_ng_runner.py".format(sys.argv[1]))
     else:
