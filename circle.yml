@@ -32,8 +32,9 @@ machine:
     #- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
 
     # Try 4.9 to see if its upto date enough to compile our code.
-    - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 100
-    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 100
+    # 4.9 isn't available in Ubuntu 14.04 so we'll just go with the default compiler
+    #- sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 100
+    #- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 100
 
 checkout:
   post:
