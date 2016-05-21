@@ -4,6 +4,9 @@ This has scripts for installing third party vendor tools
 such as binutils, gcc, ninja and qemu. This initial set
 are used to create cross compiling tools.
 
+The run install.py you need python version >= 3.5.1, to install it you
+can use python_install.sh which by default install 3.5.1.
+
 To install the tools run:
 ```
 vendor-install-tools/install.py all
