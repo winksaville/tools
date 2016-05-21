@@ -9,29 +9,11 @@ machine:
   #  version: 3.5.0
 
   pre:
-    # Needed by test.sh
-    - sudo apt-get install realpath
+    # Install base dependencies
+    - ubuntu_base_dependencies_install.sh
 
-    # Needed to compile ninja
-    - sudo apt-get install re2c
-
-    # Neadded to compile binutils-gdb
-    - sudo apt-get install texinfo
-
-    # Needed to compile gcc native compiler
-    - sudo apt-get install libgmp-dev libmpfr-dev libmpc-dev
-
-    # Needed to compile crosstool-ng
-    - sudo apt-get install gperf help2man flex
-
-    # Install gcc/g++ 5 because options -Wpednatic and -std
-    # are not in older compilers and they generate unknown
-    # command line option errors. The update-alternatives
-    # makes the compilers the default.
-    - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-    - sudo apt-get update; sudo apt-get install gcc-5; sudo apt-get install g++-5
-    - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 100
-    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
+    # Install latest compilers
+    - GCC_VERSION=6 ubuntu_gcc_g++_install.sh
 
 checkout:
   post:
@@ -42,6 +24,7 @@ checkout:
 dependencies:
   cache_directories:
     #- ${INSTALL_PREFIX_DIR_HOME_REL} # This doesn't work.
+    #  For testing this module we don't cache our results
     #- ~/opt
 
   pre:
