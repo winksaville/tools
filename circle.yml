@@ -23,18 +23,14 @@ machine:
     # Needed to compile crosstool-ng
     - sudo apt-get install gperf help2man
 
-    # We need gcc/g++ 5 because options -Wpednatic and -std
+    # Install gcc/g++ 5 because options -Wpednatic and -std
     # are not in older compilers and they generate unknown
     # command line option errors. The update-alternatives
     # makes the compilers the default.
-    #- sudo apt-get update; sudo apt-get install gcc-5; sudo apt-get install g++-5
-    #- sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 100
-    #- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
-
-    # Try 4.9 to see if its upto date enough to compile our code.
-    # 4.9 isn't available in Ubuntu 14.04 so we'll just go with the default compiler
-    #- sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 100
-    #- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 100
+    - sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+    - sudo apt-get update; sudo apt-get install gcc-5; sudo apt-get install g++-5
+    - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 100
+    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
 
 checkout:
   post:
