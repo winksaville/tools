@@ -1,8 +1,9 @@
 machine:
   environment:
+    REQUESTED_PYTHON_VER: 3.5.1
     INSTALL_PREFIX_DIR_HOME_REL: ~/opt
     INSTALL_PREFIX_DIR: ${HOME}/opt
-    PATH: ${INSTALL_PREFIX_DIR}/bin:${INSTALL_PREFIX_DIR}/x-tools/x86_64-unknown-elf/bin:${INSTALL_PREFIX_DIR}/x-tools/i386-unknown-elf/bin:${INSTALL_PREFIX_DIR}/x-tools/arm-unknown-eabi/bin:${PATH}
+    PATH: ${INSTALL_PREFIX_DIR}/bin:${INSTALL_PREFIX_DIR}/x-tools/x86_64-unknown-elf/bin:${INSTALL_PREFIX_DIR}/x-tools/i386-unknown-elf/bin:${INSTALL_PREFIX_DIR}/x-tools/arm-unknown-eabi/bin:${INSTALL_PREFIX_DIR}/Python-${REQUESTED_PYTHON_VER}/bin:${PATH}
 
   #python:
   #  version: 3.5.0
@@ -41,11 +42,11 @@ checkout:
 dependencies:
   cache_directories:
     #- ${INSTALL_PREFIX_DIR_HOME_REL} # This doesn't work.
-    #    NO cache for testing.
     #- ~/opt
 
   pre:
     # Default to python 3.5.1, needed because subprocess.run is used in vendor-install-tools
+    # REQUESTED_PYTHON_VER set above
     - ./python_install.sh
     - which python
     - python --version
