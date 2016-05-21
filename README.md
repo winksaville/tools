@@ -1,4 +1,4 @@
-# Vendor install tools
+# Vendor install tools [![CircleCI](https://circleci.com/gh/winksaville/vendor-install-tools.svg?style=svg)](https://circleci.com/gh/winksaville/vendor-install-tools)
 
 This has scripts for installing third party vendor tools
 such as binutils, gcc, ninja and qemu. This initial set
