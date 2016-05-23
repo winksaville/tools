@@ -1,12 +1,13 @@
 machine:
+  pre:
+    - cat /etc/*release
+    - pyenv 2.7.11 3.5.1
+
   environment:
-    REQUESTED_PYTHON_VER: 3.5.1
     INSTALL_PREFIX_DIR_HOME_REL: ~/opt
     INSTALL_PREFIX_DIR: ${HOME}/opt
-    PATH: ${INSTALL_PREFIX_DIR}/bin:${INSTALL_PREFIX_DIR}/x-tools/x86_64-unknown-elf/bin:${INSTALL_PREFIX_DIR}/x-tools/i386-unknown-elf/bin:${INSTALL_PREFIX_DIR}/x-tools/arm-unknown-eabi/bin:${INSTALL_PREFIX_DIR}/Python-${REQUESTED_PYTHON_VER}/bin:${PATH}
+    PATH: ${INSTALL_PREFIX_DIR}/bin:${INSTALL_PREFIX_DIR}/x-tools/x86_64-unknown-elf/bin:${INSTALL_PREFIX_DIR}/x-tools/i386-unknown-elf/bin:${INSTALL_PREFIX_DIR}/x-tools/arm-unknown-eabi/bin:${PATH}
 
-  #python:
-  #  version: 3.5.1
 
 checkout:
   post:
@@ -27,17 +28,10 @@ dependencies:
     # Install latest compilers
     - GCC_VERSION=6 ./ubuntu_gcc_g++_install.sh
 
-    # Default to python 3.5.1, needed because subprocess.run is used in vendor-install-tools
-    # REQUESTED_PYTHON_VER set above
-    - ./python_install.sh
-    - which python
-    - python --version
-    - which python2
-    - python2 --version
-    - which python3
-    - python3 --version
-    - which virtualenv
-    - virtualenv --version
+    # Verify python, ptyhone2 and python3 are what we expect
+    - v=$(python --version 2>& 1); if [ "$v" == "Python 2.7.11" ]; then echo "$v OK"; else ! echo "$v ERR"; fi
+    - v=$(python2 --version 2>& 1); if [ "$v" == "Python 2.7.11" ]; then echo "$v OK"; else ! echo "$v ERR"; fi
+    - v=$(python3 --version 2>& 1); if [ "$v" == "Python 3.5.1" ]; then echo "$v OK"; else ! echo "$v ERR"; fi
 
   post:
     # Install the tools we need
