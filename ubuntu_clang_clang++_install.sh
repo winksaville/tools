@@ -1,5 +1,5 @@
 # Install clang & clang++
-[ "${CLANG_VERSION}" == "" ] && CLANG_VERSION=3.8
+[ "${CLANG_VERSION}" == "" ] && CLANG_VERSION="3.8"
 
 ###
 # get_version
@@ -28,17 +28,18 @@ get_ver () {
 }
 
 get_ver clang
-#echo "version="${version}"
+echo "version=${version}"
 clang_ver=${version}
 echo "clang_ver=${clang_ver}"
 get_ver clang++
-#echo "version="${version}"
+echo "version=${version}"
 clangpp_ver=${version}
 echo "clangpp_ver=${clangpp_ver}"
 
 if [ "${clang_ver}" != "${CLANG_VERSION}" ] || [ "${clangpp_ver}" != "${CLANG_VERSION}" ] ; then
-  echo "add llvm-toolchain to srouces.list" ;
-  sudo sh -c 'echo "deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-${CLANG_VERSION} main" >> /etc/apt/sources.list'
+  echo "add llvm-toolchain to srouces.list"
+  cmd="echo deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-${CLANG_VERSION} main >> /etc/apt/sources.list"
+  sudo sh -c "${cmd}"
   sudo apt-get update
 else
   echo "Skipping clang/glang++ install, versions are ${CLANG_VERSION}"
@@ -46,11 +47,10 @@ fi
 
 [ "${clang_ver}" != "${CLANG_VERSION}" ] && \
   echo "install clang" && \
-  sudo apt-get install clang-${CLANG_VERSION} && \
-  sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-${GCC_VERSION} 100
+  sudo apt-get install "clang-${CLANG_VERSION}" && \
+  sudo update-alternatives --install /usr/bin/clang clang "/usr/bin/clang-${CLANG_VERSION}" 100
 
 [ "${clangpp_ver}" != "${CLANG_VERSION}" ] && \
   echo "install clang++" && \
-  sudo apt-get install clang++-${CLANG_VERSION} && \
-  sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-${GCC_VERSION} 100
-
+  sudo apt-get install "clang++-${CLANG_VERSION}" && \
+  sudo update-alternatives --install /usr/bin/clang++ clang++ "/usr/bin/clang++-${CLANG_VERSION}" 100
