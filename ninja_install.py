@@ -24,8 +24,8 @@ import traceback
 import shutil
 
 APP='ninja'
-URL = 'https://github.com/martine/ninja.git'
-DEFAULT_VER='1.6.0'
+URL = 'https://github.com/ninja-build/ninja.git'
+DEFAULT_VER='1.7.1'
 
 class Installer:
     '''Installer for ninja.'''
