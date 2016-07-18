@@ -17,6 +17,7 @@
 import utils
 import parseinstallargs
 
+import glob
 import subprocess
 import sys
 import os
@@ -25,7 +26,7 @@ import shutil
 
 APP='meson'
 URL='https://github.com/mesonbuild/meson.git'
-DEFAULT_VER='0.28.0'
+DEFAULT_VER='0.32.0'
 CHECKOUT=DEFAULT_VER
 #CHECKOUT='master'
 
@@ -56,20 +57,49 @@ class Installer:
             print('{app} {ver} is already installed'
                     .format(app=self.args.app, ver=self.args.ver))
         else:
-            print('compiling {app} {ver}'
+            print('installing {app} {ver}'
                     .format(app=self.args.app, ver=self.args.ver))
-            code_dir = os.path.join(self.args.codePrefixDir, self.args.app)
-            if self.args.forceInstall:
-                shutil.rmtree(code_dir, ignore_errors=True)
-            os.makedirs(code_dir)
 
-            utils.git('clone', [URL, code_dir])
-            os.chdir(code_dir)
-            utils.git('checkout', [CHECKOUT])
+            # Install using pip3
+            subprocess.check_call('pip3 install --prefix {prefix} --upgrade {app}=={ver}'
+                .format(prefix=self.args.installPrefixDir, app=self.args.app, ver=self.args.ver), shell=True)
 
-            # Not a list but a string
-            subprocess.check_call('./install_meson.py --prefix {}'
-                .format(self.args.installPrefixDir), shell=True)
+            # Add symlink between the 'script.py' and 'bin'
+            meson_script = os.path.join(self.args.installPrefixDir,'bin/meson.py')
+            mesonconf_script = os.path.join(self.args.installPrefixDir,'bin/mesonconf.py')
+            mesonintrospect_script = os.path.join(self.args.installPrefixDir,'bin/mesonintrospect.py')
+            wraptool_script = os.path.join(self.args.installPrefixDir,'bin/wraptool.py')
+
+            meson_bin = os.path.join(self.args.installPrefixDir,'bin/meson')
+            mesonconf_bin = os.path.join(self.args.installPrefixDir,'bin/mesonconf')
+            mesonintrospect_bin = os.path.join(self.args.installPrefixDir,'bin/mesonintrospect')
+            wraptool_bin = os.path.join(self.args.installPrefixDir,'bin/wraptool')
+
+            os.remove(meson_bin)
+            os.remove(mesonconf_bin)
+            os.remove(mesonintrospect_bin)
+            os.remove(wraptool_bin)
+
+            os.symlink(meson_script, meson_bin)
+            os.symlink(mesonconf_script, mesonconf_bin)
+            os.symlink(mesonintrospect_script, mesonintrospect_bin)
+            os.symlink(wraptool_script, wraptool_bin)
+
+            # Tell the user to update PYTHONPATH
+            python_path = glob.glob(os.path.join(self.args.installPrefixDir, 'lib/python*'))
+            if len(python_path) == 1:
+                site_packages = os.path.join(python_path[0], 'site-packages')
+                if not os.path.exists(site_packages):
+                    print('PYTHONPATH needed and expecting it to be \'{}\', but it does not exist')
+                else:
+                    print('Add the prefix directory, {prefix} to PYTHONPATH.')
+                    print('For instance add the following to .bashrc:'
+                            .format(prefix=self.args.installPrefixDir))
+                    print('  export PYTHONPATH={}:$PYTHONPATH'
+                            .format(site_packages))
+            else:
+                print('PYTHONPATH needed but there are more than one \'python*\' directories: {}'
+                        .format(python_path))
 
         return retval 
 
