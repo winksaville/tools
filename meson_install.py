@@ -30,6 +30,12 @@ DEFAULT_VER='0.32.0'
 CHECKOUT=DEFAULT_VER
 #CHECKOUT='master'
 
+def rmfile(file_name):
+    try:
+      os.remove(file_name)
+    except OSERROR:
+        pass
+
 class Installer:
     '''Installer for meson.'''
 
@@ -75,10 +81,11 @@ class Installer:
             mesonintrospect_bin = os.path.join(self.args.installPrefixDir,'bin/mesonintrospect')
             wraptool_bin = os.path.join(self.args.installPrefixDir,'bin/wraptool')
 
-            os.remove(meson_bin)
-            os.remove(mesonconf_bin)
-            os.remove(mesonintrospect_bin)
-            os.remove(wraptool_bin)
+
+            rmfile(meson_bin)
+            rmfile(mesonconf_bin)
+            rmfile(mesonintrospect_bin)
+            rmfile(wraptool_bin)
 
             os.symlink(meson_script, meson_bin)
             os.symlink(mesonconf_script, mesonconf_bin)
