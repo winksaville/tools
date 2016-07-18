@@ -12,3 +12,7 @@ sudo apt-get install libgmp-dev libmpfr-dev libmpc-dev
 
 # Needed to compile crosstool-ng
 sudo apt-get install gperf help2man flex
+
+# Upgrade pip
+pip install --upgrade pip
+pip3 install --upgrade pip
