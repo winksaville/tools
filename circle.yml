@@ -32,8 +32,8 @@ dependencies:
     - v=$(python --version 2>& 1); if [ "$v" == "Python 2.7.11" ]; then echo "$v OK"; else ! echo "$v ERR"; fi
     - v=$(python2 --version 2>& 1); if [ "$v" == "Python 2.7.11" ]; then echo "$v OK"; else ! echo "$v ERR"; fi
     - v=$(python3 --version 2>& 1); if [ "$v" == "Python 3.5.1" ]; then echo "$v OK"; else ! echo "$v ERR"; fi
-    - v=$(pip --version 2>& 1); if [ "$v" == "pip 8*" ]; then echo "$v OK pip"; else ! echo "$v ERR pip"; fi
-    - v=$(pip3 --version 2>& 1); if [ "$v" == "pip 8*" ]; then echo "$v OK pip3"; else ! echo "$v ERR pip3"; fi
+    - v=$(pip --version 2>& 1); if [[ "$v" == ^pip\ 8\..* ]]; then echo "$v OK pip"; else ! echo "$v ERR pip"; fi
+    - v=$(pip3 --version 2>& 1); if [[ "$v" == ^pip\ 8\..* ]]; then echo "$v OK pip3"; else ! echo "$v ERR pip3"; fi
 
   post:
     # Install the tools we need
