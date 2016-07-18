@@ -33,7 +33,7 @@ CHECKOUT=DEFAULT_VER
 def rmfile(file_name):
     try:
       os.remove(file_name)
-    except OSERROR:
+    except OSError:
         pass
 
 class Installer:
