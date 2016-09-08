@@ -26,7 +26,7 @@ import shutil
 
 APP='meson'
 URL='https://github.com/mesonbuild/meson.git'
-DEFAULT_VER='0.32.0'
+DEFAULT_VER='0.34.0'
 CHECKOUT=DEFAULT_VER
 #CHECKOUT='master'
 
