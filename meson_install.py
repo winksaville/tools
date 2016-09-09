@@ -63,10 +63,12 @@ class Installer:
             print('{app} {ver} is already installed'
                     .format(app=self.args.app, ver=self.args.ver))
         else:
-            print('installing {app} {ver}'
-                    .format(app=self.args.app, ver=self.args.ver))
+            # Uninstall any existing version
+            print('uninstalling {app}'.format(app=self.args.app))
+            subprocess.check_call('pip3 uninstall -y {app}'.format(app=self.args.app), shell=True)
 
             # Install using pip3
+            print('installing {app} {ver}'.format(app=self.args.app, ver=self.args.ver))
             subprocess.check_call('pip3 install --prefix {prefix} --upgrade {app}=={ver}'
                 .format(prefix=self.args.installPrefixDir, app=self.args.app, ver=self.args.ver), shell=True)
 
@@ -83,6 +85,7 @@ class Installer:
 
             if os.path.isfile(meson_script) and (not os.path.isfile(meson_bin)):
                 # Add symlink between the 'script.py' and 'bin'
+                print('Adding symlinks')
                 rmfile(meson_bin)
                 rmfile(mesonconf_bin)
                 rmfile(mesonintrospect_bin)
@@ -92,6 +95,8 @@ class Installer:
                 os.symlink(mesonconf_script, mesonconf_bin)
                 os.symlink(mesonintrospect_script, mesonintrospect_bin)
                 os.symlink(wraptool_script, wraptool_bin)
+            else:
+                print('No symlinks are needed')
 
             # Tell the user to update PYTHONPATH
             python_path = glob.glob(os.path.join(self.args.installPrefixDir, 'lib/python*'))
