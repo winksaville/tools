@@ -70,7 +70,7 @@ class Installer:
             subprocess.check_call('pip3 install --prefix {prefix} --upgrade {app}=={ver}'
                 .format(prefix=self.args.installPrefixDir, app=self.args.app, ver=self.args.ver), shell=True)
 
-            # Add symlink between the 'script.py' and 'bin'
+            # Be sure we have the "bin" versions (i.e. the version without trailing .py)
             meson_script = os.path.join(self.args.installPrefixDir,'bin/meson.py')
             mesonconf_script = os.path.join(self.args.installPrefixDir,'bin/mesonconf.py')
             mesonintrospect_script = os.path.join(self.args.installPrefixDir,'bin/mesonintrospect.py')
@@ -81,16 +81,17 @@ class Installer:
             mesonintrospect_bin = os.path.join(self.args.installPrefixDir,'bin/mesonintrospect')
             wraptool_bin = os.path.join(self.args.installPrefixDir,'bin/wraptool')
 
+            if os.path.isfile(meson_script) and (not os.path.isfile(meson_bin)):
+                # Add symlink between the 'script.py' and 'bin'
+                rmfile(meson_bin)
+                rmfile(mesonconf_bin)
+                rmfile(mesonintrospect_bin)
+                rmfile(wraptool_bin)
 
-            rmfile(meson_bin)
-            rmfile(mesonconf_bin)
-            rmfile(mesonintrospect_bin)
-            rmfile(wraptool_bin)
-
-            os.symlink(meson_script, meson_bin)
-            os.symlink(mesonconf_script, mesonconf_bin)
-            os.symlink(mesonintrospect_script, mesonintrospect_bin)
-            os.symlink(wraptool_script, wraptool_bin)
+                os.symlink(meson_script, meson_bin)
+                os.symlink(mesonconf_script, mesonconf_bin)
+                os.symlink(mesonintrospect_script, mesonintrospect_bin)
+                os.symlink(wraptool_script, wraptool_bin)
 
             # Tell the user to update PYTHONPATH
             python_path = glob.glob(os.path.join(self.args.installPrefixDir, 'lib/python*'))
