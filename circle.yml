@@ -63,7 +63,9 @@ test:
 
   override:
     #- ./test.sh force_install
-    - ./install.py ninja meson --forceInstall
+    - ./install.py meson ninja --forceInstall
+    - ./install.py ninja --forceInstall
+    - ./install.py meson --forceInstall
 
   post:
     #- ./test.sh quick
