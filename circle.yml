@@ -63,9 +63,9 @@ test:
 
   override:
     #- ./test.sh force_install
-    - ./install.py meson ninja --forceInstall
-    - ./install.py ninja --forceInstall
-    - ./install.py meson --forceInstall
+    - ./install.py meson ninja --forceInstall --installPrefixDir=${INSTALL_PREFIX_DIR}
+    - ./install.py ninja --forceInstall --installPrefixDir=${INSTALL_PREFIX_DIR}
+    - ./install.py meson --forceInstall --installPrefixDir=${INSTALL_PREFIX_DIR}
 
   post:
     #- ./test.sh quick
