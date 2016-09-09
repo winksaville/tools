@@ -32,7 +32,7 @@ dependencies:
     - ./ubuntu_base_dependencies_install.sh
 
     # Install latest compilers
-    #- GCC_VERSION=6 ./ubuntu_gcc_g++_install.sh
+    - GCC_VERSION=6 ./ubuntu_gcc_g++_install.sh
 
     # Verify python, ptyhone2 and python3 are what we expect
     - v=$(python --version 2>& 1); if [ "$v" == "Python 2.7.11" ]; then echo "$v OK"; else ! echo "$v ERR"; fi
@@ -45,29 +45,25 @@ dependencies:
     # Install the tools we need
     - ./install.py meson --installPrefixDir=${INSTALL_PREFIX_DIR}
     - ./install.py ninja --installPrefixDir=${INSTALL_PREFIX_DIR}
-      ##- ./install.py binutils-arm-eabi --installPrefixDir=${INSTALL_PREFIX_DIR}
-      ## - ./install.py gcc-arm-eabi --installPrefixDir=${INSTALL_PREFIX_DIR}
-      ##- ./install.py binutils-i586-elf --installPrefixDir=${INSTALL_PREFIX_DIR}
-      ## - ./install.py gcc-i586-elf --installPrefixDir=${INSTALL_PREFIX_DIR}
-      #- ./install.py ct-ng --installPrefixDir=${INSTALL_PREFIX_DIR}
-      #- ./install.py gcc-x86_64 --installPrefixDir=${INSTALL_PREFIX_DIR}
-      #- ./install.py gcc-i386 --installPrefixDir=${INSTALL_PREFIX_DIR}
-      #- ./install.py gcc-arm --installPrefixDir=${INSTALL_PREFIX_DIR}
-      #- ./install.py qemu-system-arm --installPrefixDir=${INSTALL_PREFIX_DIR}
+      #- ./install.py binutils-arm-eabi --installPrefixDir=${INSTALL_PREFIX_DIR}
+      # - ./install.py gcc-arm-eabi --installPrefixDir=${INSTALL_PREFIX_DIR}
+      #- ./install.py binutils-i586-elf --installPrefixDir=${INSTALL_PREFIX_DIR}
+      # - ./install.py gcc-i586-elf --installPrefixDir=${INSTALL_PREFIX_DIR}
+    - ./install.py ct-ng --installPrefixDir=${INSTALL_PREFIX_DIR}
+    - ./install.py gcc-x86_64 --installPrefixDir=${INSTALL_PREFIX_DIR}
+    - ./install.py gcc-i386 --installPrefixDir=${INSTALL_PREFIX_DIR}
+    - ./install.py gcc-arm --installPrefixDir=${INSTALL_PREFIX_DIR}
+    - ./install.py qemu-system-arm --installPrefixDir=${INSTALL_PREFIX_DIR}
 
 test:
   pre:
-    #- ./test.sh quick
-    - ./test.sh ninja
-    - ./test.sh meson
+    - ./test.sh quick
 
   override:
-    #- ./test.sh force_install
+    # test force install variants, we not doing everything because it takes to long
     - ./install.py meson ninja --forceInstall --installPrefixDir=${INSTALL_PREFIX_DIR}
     - ./install.py ninja --forceInstall --installPrefixDir=${INSTALL_PREFIX_DIR}
     - ./install.py meson --forceInstall --installPrefixDir=${INSTALL_PREFIX_DIR}
 
   post:
-    #- ./test.sh quick
-    - ./test.sh ninja
-    - ./test.sh meson
+    - ./test.sh quick
