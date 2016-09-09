@@ -29,7 +29,7 @@ dependencies:
     - echo $PYTHONPATH
 
     # Install base dependencies
-    #- ./ubuntu_base_dependencies_install.sh
+    - ./ubuntu_base_dependencies_install.sh
 
     # Install latest compilers
     #- GCC_VERSION=6 ./ubuntu_gcc_g++_install.sh
