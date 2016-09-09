@@ -63,9 +63,13 @@ class Installer:
             print('{app} {ver} is already installed'
                     .format(app=self.args.app, ver=self.args.ver))
         else:
-            # Uninstall any existing version
-            print('uninstalling {app}'.format(app=self.args.app))
-            subprocess.check_call('pip3 uninstall -y {app}'.format(app=self.args.app), shell=True)
+            # If there is a previous version uninstall it
+            if len(output) > 0:
+                # Uninstall any existing version
+                print('uninstalling {app}'.format(app=self.args.app))
+                subprocess.check_call('pip3 uninstall -y {app}'.format(app=self.args.app), shell=True)
+            else:
+                print('{app} is not installed'.format(app=self.args.app))
 
             # Install using pip3
             print('installing {app} {ver}'.format(app=self.args.app, ver=self.args.ver))
